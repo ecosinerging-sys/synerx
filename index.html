@@ -2016,14 +2016,14 @@
     }
 
     async function sendToBackend(rec) {
-      const url = window.SINERX_REGISTRO_ENDPOINT;
+      const url = window.SINERX_REGISTRO_ENDPOINT || 'https://script.google.com/macros/s/AKfycbyrwY3i4k5GZYOzLhoPUerJrOCYhqFBJFc0e2BQsUdn6-vOibrlVgdxj40B417Gz_Q/exec';
       if (!url) return;
-      const res = await fetch(url, {
+      await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(rec)
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
     }
 
     function celebrate() {
