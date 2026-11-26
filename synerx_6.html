@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
-  <meta name="description" content="SynerX 5 - Experiencia cósmica inmersiva del dragón interactivo, cinemática de despegue y vuelo horizontal con arrastre gravitacional y pre registro de clientes.">
+  <meta name="description" content="SynerX - Experiencia cósmica inmersiva del dragón interactivo, cinemática de despegue y vuelo horizontal con arrastre gravitacional y pre registro de clientes.">
   <meta name="theme-color" content="#02070B">
   <title>SynerX 6 | Experiencia Cósmica Interactiva, Transición de Vuelo & Pre Registro</title>
 
@@ -1117,7 +1117,7 @@
 
     let state = 'video'; // video -> particles -> split -> interactive -> exiting
 
-    // Estado cinemático de transición de salida (SynerX 5)
+    // Estado cinemático de transición de salida (SynerX 6)
     const exitSequence = {
       active: false,
       startTime: 0,
@@ -1126,7 +1126,7 @@
       dragonOffsetX: 0,
       dragonOffsetY: 0,
       flightVelocityX: 0,
-      targetUrl: window.SYNERX_NEXT_URL || 'index.html'
+      targetUrl: window.SYNERX_NEXT_URL || ''
     };
 
     let W = 0, H = 0, DPR = 1;
@@ -2447,6 +2447,7 @@
       await fetch(url, {
         method: 'POST',
         mode: 'no-cors',
+        keepalive: true,
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(rec)
       });
@@ -2464,9 +2465,35 @@
 
 
     /* ========================================================================
-       COREOGRAFÍA DE SALIDA CINEMÁTICA Y REDIRECCIÓN (SynerX 5)
+       COREOGRAFÍA DE SALIDA CINEMÁTICA Y REDIRECCIÓN (SynerX 6)
        ======================================================================== */
-    function startExitSequence() {
+    function resetFromExitSequence() {
+      const overlay = document.getElementById('warp-portal-overlay');
+      if (overlay) {
+        overlay.classList.remove('active');
+        overlay.setAttribute('inert', '');
+      }
+      const panelInner = document.querySelector('.panel-inner');
+      if (panelInner) panelInner.classList.remove('is-warp-sucked');
+
+      exitSequence.active = false;
+      exitSequence.spinAngle = 0;
+      exitSequence.spinSpeed = 0;
+      exitSequence.dragonOffsetX = 0;
+      exitSequence.dragonOffsetY = 0;
+      exitSequence.flightVelocityX = 0;
+
+      state = 'interactive';
+      body.classList.remove('phase-exiting');
+      body.classList.add('phase-interactive');
+      btn.disabled = false;
+      btnLabel.textContent = 'Registrarme';
+      form.hidden = true;
+      successBox.hidden = false;
+      successBox.focus();
+    }
+
+    function startExitSequence(rec) {
       if (state === 'exiting') return;
       state = 'exiting';
       
@@ -2476,6 +2503,13 @@
       exitSequence.active = true;
       exitSequence.startTime = performance.now();
       exitSequence.phase = 0;
+
+      if (rec) {
+        const successText = document.getElementById('success-text');
+        const successId = document.getElementById('success-id');
+        if (successText) successText.textContent = `Gracias, ${rec.nombre}. Tu pre registro quedó confirmado.`;
+        if (successId) successId.textContent = `ID: ${rec.id}`;
+      }
 
       // 1. Audio: Disparar síntesis de aceleración rotacional y vórtice warp
       ambientMusic.triggerExitWarp();
@@ -2493,19 +2527,49 @@
       pointer.vortex = false;
       blackHoles = [];
 
-      // 3. Activar overlay de confirmación y portal antes de redirigir
+      // 3. Activar overlay de confirmación y portal
       setTimeout(() => {
         const overlay = document.getElementById('warp-portal-overlay');
+        const msgEl = document.getElementById('warp-portal-msg');
+        const linkEl = document.getElementById('warp-portal-link');
+        const hasExternalNext = Boolean(exitSequence.targetUrl);
+
+        if (msgEl) {
+          msgEl.textContent = hasExternalNext
+            ? 'Trascendiendo a hipervelocidad hacia el ecosistema principal SinerX...'
+            : (rec && rec.id
+                ? `Tu pre registro quedó confirmado (ID: ${rec.id}). Nuestro equipo te contactará pronto.`
+                : 'Tu pre registro quedó confirmado correctamente. Nuestro equipo te contactará pronto.');
+        }
+
+        if (linkEl) {
+          const labelSpan = linkEl.querySelector('span');
+          if (hasExternalNext) {
+            linkEl.setAttribute('href', exitSequence.targetUrl);
+            if (labelSpan) labelSpan.textContent = 'ACCEDER AL ECOSISTEMA';
+            linkEl.onclick = null;
+          } else {
+            linkEl.setAttribute('href', '#reg-success');
+            if (labelSpan) labelSpan.textContent = 'VOLVER AL PORTAL';
+            linkEl.onclick = e => {
+              e.preventDefault();
+              resetFromExitSequence();
+            };
+          }
+        }
+
         if (overlay) {
           overlay.removeAttribute('inert');
           overlay.classList.add('active');
         }
       }, 1750);
 
-      // 4. Redirección suave a la siguiente página (index.html o SYNERX_NEXT_URL)
-      setTimeout(() => {
-        window.location.href = exitSequence.targetUrl;
-      }, 2600);
+      // 4. Redirección automática solo si existe una URL externa configurada
+      if (exitSequence.targetUrl) {
+        setTimeout(() => {
+          window.location.href = exitSequence.targetUrl;
+        }, 2600);
+      }
     }
 
     // Exponer función de testeo para arnés E2E automatizado
@@ -2536,11 +2600,11 @@
       btnLabel.textContent = 'Trascendiendo…';
       try {
         persistLocal(rec);
-        sendToBackend(rec); // Envío en segundo plano sin bloquear cinemática
+        sendToBackend(rec); // Envío con keepalive sin bloquear cinemática
       } catch (_) {}
 
       // Iniciar la transición cinemática de salida inmediatamente
-      startExitSequence();
+      startExitSequence(rec);
     });
 
     document.getElementById('btn-new').addEventListener('click', () => {
@@ -2553,12 +2617,6 @@
     /* ========================================================================
        10. ARRANQUE
        ======================================================================== */
-    if (coarse) {
-      const hintText = document.getElementById('hint-text');
-      if (hintText) {
-        hintText.innerHTML = '<kbd>Deslizar</kbd>perturba el campo &nbsp;·&nbsp; <kbd>Tocar</kbd>onda &nbsp;·&nbsp; <kbd>Mantener</kbd>vórtice';
-      }
-    }
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         running = false;
