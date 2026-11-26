@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
-  <meta name="description" content="SynerX 4 - Experiencia cósmica inmersiva del dragón interactivo, campo estelar profundo, micro agujeros negros en vórtice y pre registro de clientes.">
+  <meta name="description" content="SynerX - Experiencia cósmica inmersiva del dragón interactivo, cinemática de despegue y vuelo horizontal con arrastre gravitacional y pre registro de clientes.">
   <meta name="theme-color" content="#02070B">
-  <title>SynerX 4 | Experiencia Cósmica Interactiva & Pre Registro</title>
+  <title>SynerX 6 | Experiencia Cósmica Interactiva, Transición de Vuelo & Pre Registro</title>
 
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icon-192x192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +20,7 @@
 
   <style>
     /* ==========================================================================
-       SYNERX_4 · SISTEMA DE DISEÑO CÓSMICO Y AGUJEROS NEGROS INTERACTIVOS
+       SYNERX_5 · EXPERIENCIA CÓSMICA CON VUELO HORIZONTAL & ARRASTRE GRAVITACIONAL
        ========================================================================== */
     :root {
       --void: #02070B;
@@ -41,6 +45,7 @@
     html, body {
       width: 100%;
       height: 100%;
+      height: 100dvh;
       overflow: hidden;
       background: var(--void);
       color: var(--text);
@@ -717,27 +722,44 @@
 
     .panel-legal strong { color: var(--teal); font-weight: 600; }
 
-    /* ---------- Responsive (Mobile / Celular Vertical) ---------- */
+    /* ---------- Responsive (Mobile / Vertical) ---------- */
     @media (max-width: 820px), (max-aspect-ratio: 9/10) {
+      .intro-video {
+        object-fit: contain;
+        object-position: center;
+      }
+
+      .audio-pill-prompt {
+        bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
+        min-height: 44px;
+        padding: 0.7rem 1.5rem;
+      }
+
+      .ambient-sound-toggle {
+        top: max(0.75rem, env(safe-area-inset-top, 0px));
+        left: 0.85rem;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.66rem;
+        touch-action: manipulation;
+      }
+
       .form-panel {
         top: 32%;
         width: 100%;
         height: 68%;
-        display: flex;
         align-items: flex-start;
-        justify-content: center;
-        padding: 0.6rem 0.85rem max(4.5rem, calc(2.5rem + env(safe-area-inset-bottom, 0px)));
+        padding: 0.75rem 0.9rem max(4.5rem, calc(2.5rem + env(safe-area-inset-bottom, 0px)));
         transform: translateY(100%);
-        pointer-events: auto !important; /* CRUCIAL: Permite que el celular capture el toque */
-        touch-action: pan-y !important;   /* Permite scroll vertical fluido en celular */
-        overflow-y: scroll !important;     /* Activa scroll nativo */
-        -webkit-overflow-scrolling: touch; /* Scroll con inercia ultra suave en iOS */
+        pointer-events: auto !important;
+        touch-action: pan-y !important;
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch;
         overscroll-behavior-y: contain;
       }
 
       .form-panel::before {
-        left: 6%;
-        right: 6%;
+        left: 8%;
+        right: 8%;
         top: 0;
         bottom: auto;
         width: auto;
@@ -746,15 +768,9 @@
       }
 
       .panel-inner {
-        max-width: 440px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 1.15rem 1rem 1.4rem;
-        gap: 0.75rem;
+        padding: 1.15rem 1.1rem;
+        gap: 0.7rem;
         border-radius: 18px;
-        background: rgba(3, 14, 22, 0.82);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
         pointer-events: auto !important;
         touch-action: pan-y !important;
       }
@@ -763,115 +779,135 @@
         touch-action: pan-y;
       }
 
-      .panel-brand {
-        display: flex !important;
-        align-items: center;
-        gap: 8px;
-      }
+      .panel-brand { display: none; }
+      .panel-lead { display: none; }
+      .panel-heading-wrap { margin-bottom: 0.35rem; }
+      .control input { height: 48px; font-size: 16px !important; touch-action: manipulation; }
+      .btn-submit { height: 48px; font-size: 0.86rem; touch-action: manipulation; }
+      .terms-label { touch-action: manipulation; }
+      .social-icon-btn { width: 44px; height: 44px; touch-action: manipulation; }
+      .stage-hint { left: 50%; bottom: auto; top: calc(32% - 1.65rem); font-size: 0.68rem; max-width: 94vw; overflow: hidden; text-overflow: ellipsis; }
+    }
 
-      .panel-brand .brand-logo-dragon {
-        width: 32px;
-        height: 32px;
-      }
-
-      .panel-brand .brand-word {
-        font-size: 1.15rem;
-      }
-
-      .panel-lead {
-        display: flex !important;
-        font-size: 0.72rem;
-        letter-spacing: 0.12em;
-        margin-top: -0.25rem;
-      }
-
-      .reg-form {
-        gap: 0.65rem;
-      }
-
-      .control input {
-        font-size: 16px !important; /* Previene el molesto zoom automático en iPhone/Safari */
-        height: 48px;
-        padding: 0 14px 0 42px;
-        touch-action: manipulation;
-      }
-
-      .control svg {
-        left: 14px;
-        width: 17px;
-        height: 17px;
-      }
-
-      .field label {
-        font-size: 0.78rem;
-        margin-bottom: 0.25rem;
-      }
-
-      .btn-submit {
-        height: 48px;
-        font-size: 0.88rem;
-        touch-action: manipulation;
-      }
-
-      .terms-label {
-        font-size: 0.76rem;
-        gap: 8px;
-        touch-action: manipulation;
-      }
-
-      .custom-checkbox {
-        width: 19px;
-        height: 19px;
-      }
-
-      .stage-hint {
-        left: 50%;
-        bottom: auto;
-        top: calc(32% - 1.8rem);
-        font-size: 0.65rem;
-        padding: 0.25rem 0.7rem;
-        white-space: nowrap;
-        background: rgba(2, 10, 15, 0.75);
-      }
-
-      .ambient-sound-toggle {
-        top: 0.75rem;
-        left: 0.75rem;
-        padding: 0.35rem 0.7rem;
-        font-size: 0.68rem;
-        touch-action: manipulation;
-      }
-
-      .panel-socials-wrapper {
-        margin-top: 0.25rem;
-        padding-top: 0.45rem;
-      }
-
-      .social-icons-row {
-        gap: 10px;
-      }
-
-      .social-icon-btn {
-        width: 36px;
-        height: 36px;
-        touch-action: manipulation;
-      }
-
-      .social-icon-btn svg {
-        width: 17px;
-        height: 17px;
-      }
-
-      .panel-legal {
-        font-size: 0.62rem;
-        line-height: 1.4;
-        padding-top: 0.45rem;
-      }
+    @media (max-width: 420px) {
+      .panel-inner { padding: 1rem 0.95rem; gap: 0.55rem; }
+      .eyebrow { font-size: 0.76rem; letter-spacing: 0.16em; }
+      .stage-hint { font-size: 0.64rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; transition-delay: 0ms !important; }
     }
+
+    /* ---------- Capa 4: Transición de Salida Cinemática & Arrastre Gravitacional (SynerX 5) ---------- */
+    body.phase-exiting {
+      cursor: wait;
+    }
+
+    /* Succión relativista de la tarjeta de registro por la estela del dragón */
+    .phase-exiting .panel-inner,
+    .panel-inner.is-warp-sucked {
+      transform: translate(calc(120vw), -10px) skewX(-18deg) scale(0.55) !important;
+      opacity: 0 !important;
+      filter: blur(10px) brightness(2.0) drop-shadow(0 0 45px var(--cyan)) !important;
+      transition: transform 1.25s cubic-bezier(0.5, 0, 0.7, 0.2) 0.45s,
+                  opacity 0.95s ease 0.55s,
+                  filter 1.0s ease 0.45s !important;
+      pointer-events: none !important;
+    }
+
+    .phase-exiting .stage-hint,
+    .phase-exiting .ambient-sound-toggle {
+      opacity: 0 !important;
+      transform: translate(140px, 0) scale(0.7) !important;
+      transition: opacity 0.5s ease, transform 0.6s ease !important;
+      pointer-events: none !important;
+    }
+
+    /* Portal de Salida & Redirección Gravitacional */
+    .warp-portal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.20), rgba(2, 7, 11, 0.98) 72%);
+      opacity: 0;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .warp-portal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .warp-portal-box {
+      background: rgba(3, 16, 23, 0.92);
+      border: 1px solid var(--cyan);
+      box-shadow: 0 0 50px rgba(0, 240, 255, 0.55);
+      border-radius: 20px;
+      padding: clamp(1.8rem, 3vw, 2.6rem) clamp(2rem, 3.5vw, 3rem);
+      text-align: center;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      max-width: 520px;
+      width: 90%;
+      transform: scale(0.92);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .warp-portal-overlay.active .warp-portal-box {
+      transform: scale(1);
+    }
+
+    .warp-portal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .warp-portal-title span {
+      color: var(--cyan);
+      text-shadow: 0 0 16px var(--cyan);
+    }
+
+    .warp-portal-text {
+      font-size: 0.92rem;
+      color: var(--silver);
+      line-height: 1.5;
+      margin-bottom: 1.4rem;
+    }
+
+    .warp-portal-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.75rem 1.8rem;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--teal) 100%);
+      color: #02070B;
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      border-radius: 50px;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .warp-portal-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.85);
+    }
+
   </style>
 </head>
 
@@ -897,7 +933,7 @@
   </button>
 
   <!-- Control flotante de audio ambiental -->
-  <button id="ambient-sound-toggle" class="ambient-sound-toggle playing" aria-label="Silenciar o reproducir música ambiental">
+  <button id="ambient-sound-toggle" class="ambient-sound-toggle" aria-label="Silenciar o reproducir música ambiental">
     <span id="sound-icon-label">Música</span>
     <div class="sound-wave-anim" aria-hidden="true">
       <span></span>
@@ -995,33 +1031,33 @@
         <div class="socials-header-text">Conéctese con SinerX</div>
         <div class="social-icons-row">
           
-          <!-- Instagram -->
-          <a href="https://instagram.com/sinerx" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Instagram de SinerX">
+          <!-- Instagram (icono sin enlace externo activo) -->
+          <button type="button" class="social-icon-btn" aria-label="Instagram de SinerX (próximamente)" aria-disabled="true">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
               <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
             </svg>
             <span class="tooltip-text">Instagram</span>
-          </a>
+          </button>
 
-          <!-- TikTok -->
-          <a href="https://tiktok.com/@sinerx" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="TikTok de SinerX">
+          <!-- TikTok (icono sin enlace externo activo) -->
+          <button type="button" class="social-icon-btn" aria-label="TikTok de SinerX (próximamente)" aria-disabled="true">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
             </svg>
             <span class="tooltip-text">TikTok</span>
-          </a>
+          </button>
 
-          <!-- LinkedIn -->
-          <a href="https://linkedin.com/company/sinerx" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="LinkedIn de SinerX">
+          <!-- LinkedIn (icono sin enlace externo activo) -->
+          <button type="button" class="social-icon-btn" aria-label="LinkedIn de SinerX (próximamente)" aria-disabled="true">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
               <rect x="2" y="9" width="4" height="12"></rect>
               <circle cx="4" cy="4" r="2"></circle>
             </svg>
             <span class="tooltip-text">LinkedIn</span>
-          </a>
+          </button>
 
         </div>
       </div>
@@ -1033,6 +1069,22 @@
       </footer>
     </div>
   </aside>
+
+  <!-- Portal de Salida & Redirección Gravitacional (SynerX 5) -->
+  <aside id="warp-portal-overlay" class="warp-portal-overlay" aria-live="assertive" aria-modal="true" role="dialog" inert>
+    <div class="warp-portal-box">
+      <h2 class="warp-portal-title"><span>SynerX</span> · Pre Registro Confirmado</h2>
+      <p class="warp-portal-text" id="warp-portal-msg">Trascendiendo a hipervelocidad hacia el ecosistema principal SinerX...</p>
+      <a href="index.html" class="warp-portal-btn" id="warp-portal-link">
+        <span>ACCEDER AL ECOSISTEMA</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+  </aside>
+
 
   <!-- Nube de puntos SinerX v3: Dragón + ynerX + Prefijo S y punto -->
   <script src="assets/data/sinerx_particles_v3.js"></script>
@@ -1063,7 +1115,20 @@
 
     const TIMING = { materialize: 1520, split: 1200 }; // Acelerado 1.25x (1900/1.25=1520, 1500/1.25=1200)
 
-    let state = 'video'; // video -> particles -> split -> interactive
+    let state = 'video'; // video -> particles -> split -> interactive -> exiting
+
+    // Estado cinemático de transición de salida (SynerX 6)
+    const exitSequence = {
+      active: false,
+      startTime: 0,
+      spinAngle: 0,
+      spinSpeed: 0,
+      dragonOffsetX: 0,
+      dragonOffsetY: 0,
+      flightVelocityX: 0,
+      targetUrl: window.SYNERX_NEXT_URL || ''
+    };
+
     let W = 0, H = 0, DPR = 1;
 
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -1216,13 +1281,37 @@
         chime.stop(this.ctx.currentTime + 1.9);
       }
 
+      triggerExitWarp() {
+        if (!this.ctx || !this.isPlaying) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(720, now + 1.8);
+        g.gain.setValueAtTime(0.001, now);
+        g.gain.linearRampToValueAtTime(0.04, now + 0.6);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+        osc.connect(g);
+        g.connect(this.master);
+        osc.start(now);
+        osc.stop(now + 2.25);
+      }
+
       toggle() {
         if (!this.ctx) { this.start(); return; }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
         if (this.isPlaying) {
+          this.master.gain.cancelScheduledValues(this.ctx.currentTime);
+          this.master.gain.setValueAtTime(Math.max(0.0001, this.master.gain.value), this.ctx.currentTime);
           this.master.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.5);
           this.isPlaying = false;
           if (ambientToggle) ambientToggle.classList.remove('playing');
         } else {
+          this.master.gain.cancelScheduledValues(this.ctx.currentTime);
+          this.master.gain.setValueAtTime(Math.max(0.0001, this.master.gain.value), this.ctx.currentTime);
           this.master.gain.exponentialRampToValueAtTime(this.targetVolume, this.ctx.currentTime + 0.8);
           this.isPlaying = true;
           if (ambientToggle) ambientToggle.classList.add('playing');
@@ -1294,10 +1383,10 @@
     let bloomAlpha = 0;
 
     function computeLayouts() {
-      const s = Math.max(W / frameW, H / frameH);
+      const stacked = stackedMQ.matches;
+      const s = stacked ? Math.min(W / frameW, H / frameH) : Math.max(W / frameW, H / frameH);
       cover = { s, tx: (W - frameW * s) / 2, ty: (H - frameH * s) / 2 };
 
-      const stacked = stackedMQ.matches;
       region = stacked ? { x: 0, y: 0, w: W, h: H * 0.32 } : { x: 0, y: 0, w: W * 0.5, h: H };
 
       const A = groupBox[0]; // Dragón
@@ -1401,6 +1490,7 @@
           y: Math.random() * H,
           vx: (Math.random() - 0.5) * 0.16,
           vy: (Math.random() - 0.5) * 0.16 - 0.03,
+          speedFactor: 0.4 + Math.random() * 1.2,
           r: isBright ? (Math.random() * 1.4 + 1.2) : (Math.random() * 0.8 + 0.4),
           baseA: Math.random() * 0.55 + 0.35,
           twinkleSpeed: Math.random() * 2.4 + 1.2,
@@ -1656,6 +1746,15 @@
         s.x += s.vx * dt;
         s.y += (s.vy - 0.03) * dt;
 
+        // Arrastre gravitacional hiperespacial durante la salida cinemática
+        if (state === 'exiting') {
+          const tau = (time - exitSequence.startTime) / 1000;
+          if (tau >= 1.0) {
+            const warpPull = Math.min(1.0, (tau - 1.0) / 0.85);
+            s.vx += (1600 * (s.speedFactor || 1.0) * warpPull + 40) * (dt / 60);
+          }
+        }
+
         // Torus cíclico infinito a pantalla completa
         if (s.x < -10) s.x = W + 10; else if (s.x > W + 10) s.x = -10;
         if (s.y < -10) s.y = H + 10; else if (s.y > H + 10) s.y = -10;
@@ -1665,11 +1764,23 @@
         const curAlpha = Math.max(0.18, Math.min(1.0, s.baseA + tw * 0.3));
         const curR = s.r * (1 + tw * 0.16);
 
-        ctx.fillStyle = s.color;
-        ctx.globalAlpha = curAlpha;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, curR, 0, Math.PI * 2);
-        ctx.fill();
+        // Render de líneas de hiperespacio con profundidad 3D durante la salida
+        if (state === 'exiting' && s.vx > 15) {
+          const warpTrail = Math.min(W * 0.65, s.vx * 0.075);
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = Math.min(3.2, s.r * 1.5);
+          ctx.globalAlpha = Math.min(1.0, curAlpha * 1.4);
+          ctx.beginPath();
+          ctx.moveTo(s.x - warpTrail, s.y);
+          ctx.lineTo(s.x, s.y);
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = s.color;
+          ctx.globalAlpha = curAlpha;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, curR, 0, Math.PI * 2);
+          ctx.fill();
+        }
 
         // Destello de 4 puntas en estrellas principales
         if (s.isBright && curAlpha > 0.6) {
@@ -1682,10 +1793,11 @@
         }
       }
 
-      // 2. Líneas de constelación tenues
-      ctx.lineWidth = 1;
-      const stepCheck = lowPower ? 4 : 2;
-      for (let i = 0; i < stars.length; i += stepCheck) {
+      // 2. Líneas de constelación tenues (se suspenden durante la hipersalida)
+      if (state !== 'exiting') {
+        ctx.lineWidth = 1;
+        const stepCheck = lowPower ? 4 : 2;
+        for (let i = 0; i < stars.length; i += stepCheck) {
         const a = stars[i];
         for (let j = i + 1; j < Math.min(i + 14, stars.length); j++) {
           const b = stars[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
@@ -1694,6 +1806,7 @@
             ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
           }
         }
+      }
       }
 
       // 3. Render de Agujero Negro y Disco de Acreción Relativista (Req 4)
@@ -1772,6 +1885,115 @@
 
     function stepParticles(dt, time, e) {
       const T0 = groupTransform(0, e), T1 = groupTransform(1, e);
+      // ========================================================================
+      // TRANSICIÓN DE SALIDA CINEMÁTICA (SynerX 5):
+      // FASE 1 (0s - 0.8s): Giro acelerado del dragón sobre su centro de masa
+      // FASE 2 (0.8s - 1.4s): Metamorfosis a forma voladora aerodinámica
+      // FASE 3 (1.4s - 2.8s): Vuelo horizontal a hipervelocidad hacia la derecha
+      // ========================================================================
+      if (state === 'exiting') {
+        const tau = (time - exitSequence.startTime) / 1000;
+        const c0 = groupCenter(0);
+        
+        if (tau < 0.8) {
+          // Fase 1: El dragón empieza a girar acumulando energía cinética rotacional
+          const spinProgress = Math.min(1.0, tau / 0.8);
+          const spinOmega = easeInOutCubic(spinProgress) * 26.0; // rad/s
+          exitSequence.spinAngle += spinOmega * (dt / 60);
+          bloomAlpha = Math.min(0.95, 0.5 + spinProgress * 0.45);
+          
+          for (let i = 0; i < N; i++) {
+            const g = GRP[i];
+            if (g === 0) {
+              const hx = FX0[i] * T0.s + T0.tx;
+              const hy = FY0[i] * T0.s + T0.ty;
+              const dx = hx - c0.x, dy = hy - c0.y;
+              const r = Math.sqrt(dx * dx + dy * dy);
+              const phi = Math.atan2(dy, dx) + exitSequence.spinAngle;
+              const rPulsed = r * (1.0 + 0.10 * Math.sin(tau * 16.0));
+              const tx = c0.x + rPulsed * Math.cos(phi);
+              const ty = c0.y + rPulsed * Math.sin(phi);
+              X[i] += (tx - X[i]) * 0.45 * dt;
+              Y[i] += (ty - Y[i]) * 0.45 * dt;
+            } else {
+              // Palabras y prefijo S se espiralan y son absorbidos en el vórtice del dragón
+              X[i] += (c0.x - X[i]) * 0.14 * dt - (Y[i] - c0.y) * 0.18 * dt;
+              Y[i] += (c0.y - Y[i]) * 0.14 * dt + (X[i] - c0.x) * 0.18 * dt;
+              ALPHA[i] = Math.max(0.0, ALPHA[i] - dt * 0.04);
+            }
+          }
+        } else if (tau < 1.4) {
+          // Fase 2: Metamorfosis a forma voladora aerodinámica (desenrollado de alas y cola)
+          const m = (tau - 0.8) / 0.6; // progreso de metamorfosis 0 -> 1
+          const easeM = easeInOutCubic(m);
+          bloomAlpha = 0.85;
+
+          for (let i = 0; i < N; i++) {
+            const g = GRP[i];
+            if (g !== 0) {
+              ALPHA[i] = Math.max(0.0, ALPHA[i] - dt * 0.08);
+              continue;
+            }
+            const hx = FX0[i] * T0.s + T0.tx;
+            const hy = FY0[i] * T0.s + T0.ty;
+            const dx = hx - c0.x, dy = hy - c0.y;
+            const u = (FX0[i] - 300) / 300;
+            
+            // Ondulación corporal sinusoidal y aleteo armónico
+            const waveY = Math.sin(u * 3.6 - tau * 14.0) * 32.0 * easeM;
+            const wingY = Math.cos(tau * 20.0) * 40.0 * Math.sign(FY0[i] - 300) * easeM;
+            const glideX = 420.0 * easeM * easeM;
+            
+            const targetX = c0.x + dx * (1.0 + 0.5 * easeM) + glideX;
+            const targetY = c0.y + dy * (1.0 - 0.3 * easeM) + waveY + wingY;
+            
+            X[i] += (targetX - X[i]) * 0.55 * dt;
+            Y[i] += (targetY - Y[i]) * 0.55 * dt;
+          }
+        } else {
+          // Fase 3: Vuelo horizontal hacia la derecha a hipervelocidad saliendo de la página
+          const pSurge = tau - 1.4;
+          const vFlight = 800.0 + 1700.0 * pSurge + 1200.0 * pSurge * pSurge;
+          exitSequence.flightVelocityX = vFlight;
+          exitSequence.dragonOffsetX += vFlight * (dt / 60);
+          bloomAlpha = Math.max(0.2, 0.85 - pSurge * 0.35);
+
+          for (let i = 0; i < N; i++) {
+            const g = GRP[i];
+            if (g !== 0) {
+              ALPHA[i] = 0;
+              continue;
+            }
+            const hx = FX0[i] * T0.s + T0.tx;
+            const hy = FY0[i] * T0.s + T0.ty;
+            const dx = hx - c0.x, dy = hy - c0.y;
+            const u = (FX0[i] - 300) / 300;
+            
+            const waveY = Math.sin(u * 3.6 - tau * 18.0) * 36.0;
+            const wingY = Math.cos(tau * 24.0) * 44.0 * Math.sign(FY0[i] - 300);
+            
+            const targetX = c0.x + dx * 1.5 + 420.0 + exitSequence.dragonOffsetX;
+            const targetY = c0.y + dy * 0.70 + waveY + wingY;
+            
+            X[i] += (targetX - X[i]) * 0.65 * dt;
+            Y[i] += (targetY - Y[i]) * 0.65 * dt;
+          }
+
+          // Chispas cuánticas eyectadas en la estela del vuelo horizontal
+          if (Math.random() < 0.65) {
+            quantumSparks.push({
+              x: c0.x + 420.0 + exitSequence.dragonOffsetX - Math.random() * 80,
+              y: c0.y + (Math.random() - 0.5) * 60,
+              vx: -vFlight * 0.015 - Math.random() * 5,
+              vy: (Math.random() - 0.5) * 3,
+              life: 1.0,
+              color: Math.random() < 0.5 ? '#00F0FF' : '#2EE6C5'
+            });
+          }
+        }
+        return [T0, T1];
+      }
+
       const K = 0.05;
       const damp = Math.pow(0.86, dt);
       const breathe = state !== 'particles' && !reduceMotion;
@@ -1840,9 +2062,23 @@
             ctx.fillRect(X[i] + o1, Y[i] + o1, s1 * a, s1 * a);
             ctx.globalAlpha = 1.0;
           } else if (g === 1) {
-            ctx.fillRect(X[i] + o1, Y[i] + o1, s1, s1);
+            if (state === 'exiting') {
+              const a = ALPHA[i] !== undefined ? ALPHA[i] : 1.0;
+              if (a <= 0.01) continue;
+              ctx.globalAlpha = a;
+              ctx.fillRect(X[i] + o1, Y[i] + o1, s1, s1);
+              ctx.globalAlpha = 1.0;
+            } else {
+              ctx.fillRect(X[i] + o1, Y[i] + o1, s1, s1);
+            }
           } else {
-            ctx.fillRect(X[i] + o0, Y[i] + o0, s0, s0);
+            // Trazos de velocidad horizontal durante el vuelo
+            if (state === 'exiting' && exitSequence.flightVelocityX > 200) {
+              const trail = Math.min(80, exitSequence.flightVelocityX * 0.024);
+              ctx.fillRect(X[i] + o0 - trail, Y[i] + o0, s0 + trail, s0);
+            } else {
+              ctx.fillRect(X[i] + o0, Y[i] + o0, s0, s0);
+            }
           }
         }
       }
@@ -1920,6 +2156,21 @@
       }
       drawBloom();
       drawPointerFx(now);
+
+      // Onda de choque relativista horizontal barriendo la pantalla (SynerX 5)
+      if (state === 'exiting') {
+        const tau = (now - exitSequence.startTime) / 1000;
+        if (tau >= 1.35 && tau <= 2.7) {
+          const shockX = (tau - 1.35) * (W * 1.35);
+          const grad = ctx.createLinearGradient(shockX - 380, 0, shockX + 140, 0);
+          grad.addColorStop(0, 'rgba(0, 240, 255, 0)');
+          grad.addColorStop(0.65, 'rgba(0, 240, 255, 0.38)');
+          grad.addColorStop(0.85, 'rgba(255, 255, 255, 0.80)');
+          grad.addColorStop(1, 'rgba(46, 230, 197, 0)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(shockX - 380, 0, 520, H);
+        }
+      }
     }
 
     /* ========================================================================
@@ -1996,35 +2247,67 @@
     }
 
     /* ---- Video con Audio Habilitado y Gestión de Autoplay ---- */
+    let videoWatchdog = null;
+    let audioUnlockBusy = false;
+
+    function clearVideoWatchdog() {
+      if (videoWatchdog) { clearInterval(videoWatchdog); videoWatchdog = null; }
+    }
+
     function goToEnd() {
       if (state !== 'video') return;
-      if (isFinite(video.duration) && video.duration > 0) {
+      clearVideoWatchdog();
+      if (isFinite(video.duration) && video.duration > 0 && !video.paused) {
         video.currentTime = Math.max(0, video.duration - 0.03);
+        setTimeout(() => { if (state === 'video') startScene(); }, 220);
       } else {
         startScene();
       }
     }
 
-    function enableVideoAudio() {
-      if (video && video.muted) {
+    async function enableVideoAudio(ev) {
+      if (ev) { ev.stopPropagation(); }
+      if (!video || state !== 'video' || audioUnlockBusy) return;
+      audioUnlockBusy = true;
+      try {
+        const wasPaused = video.paused;
         video.muted = false;
         video.volume = 1.0;
+        video.playbackRate = 1.25;
         if (audioPrompt) audioPrompt.classList.remove('active');
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          await playPromise;
+        }
+        // Si tras desmutear el navegador lo pausó, reintentar en muted para no congelar
+        if (video.paused && !wasPaused) {
+          video.muted = true;
+          await video.play();
+        }
+      } catch (_) {
+        try {
+          video.muted = true;
+          await video.play();
+        } catch (__) {
+          startScene();
+        }
+      } finally {
+        audioUnlockBusy = false;
       }
     }
 
     function initVideo() {
       if (reduceMotion || !DATA) { startScene({ instant: true }); return; }
 
-      // 7. Aumentar la velocidad del video inicial a 1.25x (resto a velocidad normal)
       video.playbackRate = 1.25;
       video.addEventListener('play', () => { video.playbackRate = 1.25; });
       video.addEventListener('loadedmetadata', () => { video.playbackRate = 1.25; });
 
-      video.addEventListener('ended', () => startScene(), { once: true });
-      video.addEventListener('error', () => startScene(), { once: true });
+      const finishVideo = () => { clearVideoWatchdog(); startScene(); };
+      video.addEventListener('ended', finishVideo, { once: true });
+      video.addEventListener('error', finishVideo, { once: true });
       const sources = video.querySelectorAll('source');
-      if (sources.length) sources[sources.length - 1].addEventListener('error', () => startScene(), { once: true });
+      if (sources.length) sources[sources.length - 1].addEventListener('error', finishVideo, { once: true });
 
       // Teclas rápidas para saltar si el usuario lo desea
       window.addEventListener('keydown', ev => {
@@ -2032,14 +2315,15 @@
       });
       video.addEventListener('dblclick', goToEnd);
 
-      // Desbloquear audio con cualquier clic en la pantalla durante el video
-      document.addEventListener('pointerdown', () => {
-        if (state === 'video') enableVideoAudio();
-      }, { once: true });
-
+      // Desbloquear audio con botón o primer toque/clic en la pantalla durante el video
       if (audioPrompt) {
-        audioPrompt.addEventListener('click', () => enableVideoAudio());
+        audioPrompt.addEventListener('click', ev => enableVideoAudio(ev));
       }
+      document.addEventListener('pointerdown', ev => {
+        if (state === 'video' && ev.target !== audioPrompt && !audioPrompt?.contains(ev.target)) {
+          enableVideoAudio(ev);
+        }
+      }, { once: true });
 
       // Intentar reproducir con audio desmuteado
       video.muted = false;
@@ -2047,14 +2331,27 @@
       const p = video.play();
       if (p && typeof p.catch === 'function') {
         p.catch(() => {
-          // Si el navegador bloquea autoplay unmuted, iniciar muted y mostrar botón de activación
           video.muted = true;
           if (audioPrompt) audioPrompt.classList.add('active');
           return video.play();
-        }).catch(() => startScene());
+        }).catch(() => finishVideo());
       }
 
-      setTimeout(() => { if (state === 'video' && video.currentTime < 0.1) startScene(); }, 25000);
+      // Watchdog anti-congelamiento: detecta video detenido/stalled > 2.5s
+      let lastTime = -1;
+      let stalledTicks = 0;
+      videoWatchdog = setInterval(() => {
+        if (state !== 'video') { clearVideoWatchdog(); return; }
+        if (document.hidden) return;
+        const cur = video.currentTime;
+        if (Math.abs(cur - lastTime) < 0.02) {
+          stalledTicks++;
+          if (stalledTicks >= 5) finishVideo();
+        } else {
+          stalledTicks = 0;
+        }
+        lastTime = cur;
+      }, 500);
     }
 
     /* ========================================================================
@@ -2150,6 +2447,7 @@
       await fetch(url, {
         method: 'POST',
         mode: 'no-cors',
+        keepalive: true,
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(rec)
       });
@@ -2164,6 +2462,118 @@
       setTimeout(() => rings.push({ x: cx, y: cy, r: 10, max: Math.max(region.w, region.h) * 0.5, life: 1 }), 180);
       ambientMusic.triggerResonance(1056); // Frecuencia de celebración
     }
+
+
+    /* ========================================================================
+       COREOGRAFÍA DE SALIDA CINEMÁTICA Y REDIRECCIÓN (SynerX 6)
+       ======================================================================== */
+    function resetFromExitSequence() {
+      const overlay = document.getElementById('warp-portal-overlay');
+      if (overlay) {
+        overlay.classList.remove('active');
+        overlay.setAttribute('inert', '');
+      }
+      const panelInner = document.querySelector('.panel-inner');
+      if (panelInner) panelInner.classList.remove('is-warp-sucked');
+
+      exitSequence.active = false;
+      exitSequence.spinAngle = 0;
+      exitSequence.spinSpeed = 0;
+      exitSequence.dragonOffsetX = 0;
+      exitSequence.dragonOffsetY = 0;
+      exitSequence.flightVelocityX = 0;
+
+      state = 'interactive';
+      body.classList.remove('phase-exiting');
+      body.classList.add('phase-interactive');
+      btn.disabled = false;
+      btnLabel.textContent = 'Registrarme';
+      form.hidden = true;
+      successBox.hidden = false;
+      successBox.focus();
+    }
+
+    function startExitSequence(rec) {
+      if (state === 'exiting') return;
+      state = 'exiting';
+      
+      body.classList.remove('phase-interactive');
+      body.classList.add('phase-exiting');
+
+      exitSequence.active = true;
+      exitSequence.startTime = performance.now();
+      exitSequence.phase = 0;
+
+      if (rec) {
+        const successText = document.getElementById('success-text');
+        const successId = document.getElementById('success-id');
+        if (successText) successText.textContent = `Gracias, ${rec.nombre}. Tu pre registro quedó confirmado.`;
+        if (successId) successId.textContent = `ID: ${rec.id}`;
+      }
+
+      // 1. Audio: Disparar síntesis de aceleración rotacional y vórtice warp
+      ambientMusic.triggerExitWarp();
+
+      // 2. DOM: Animar la succión gravitacional de la tarjeta de pre registro
+      const panelInner = document.querySelector('.panel-inner');
+      if (panelInner) {
+        setTimeout(() => {
+          panelInner.classList.add('is-warp-sucked');
+        }, 450);
+      }
+
+      // Desactivar interacciones del puntero
+      pointer.active = false;
+      pointer.vortex = false;
+      blackHoles = [];
+
+      // 3. Activar overlay de confirmación y portal
+      setTimeout(() => {
+        const overlay = document.getElementById('warp-portal-overlay');
+        const msgEl = document.getElementById('warp-portal-msg');
+        const linkEl = document.getElementById('warp-portal-link');
+        const hasExternalNext = Boolean(exitSequence.targetUrl);
+
+        if (msgEl) {
+          msgEl.textContent = hasExternalNext
+            ? 'Trascendiendo a hipervelocidad hacia el ecosistema principal SinerX...'
+            : (rec && rec.id
+                ? `Tu pre registro quedó confirmado (ID: ${rec.id}). Nuestro equipo te contactará pronto.`
+                : 'Tu pre registro quedó confirmado correctamente. Nuestro equipo te contactará pronto.');
+        }
+
+        if (linkEl) {
+          const labelSpan = linkEl.querySelector('span');
+          if (hasExternalNext) {
+            linkEl.setAttribute('href', exitSequence.targetUrl);
+            if (labelSpan) labelSpan.textContent = 'ACCEDER AL ECOSISTEMA';
+            linkEl.onclick = null;
+          } else {
+            linkEl.setAttribute('href', '#reg-success');
+            if (labelSpan) labelSpan.textContent = 'VOLVER AL PORTAL';
+            linkEl.onclick = e => {
+              e.preventDefault();
+              resetFromExitSequence();
+            };
+          }
+        }
+
+        if (overlay) {
+          overlay.removeAttribute('inert');
+          overlay.classList.add('active');
+        }
+      }, 1750);
+
+      // 4. Redirección automática solo si existe una URL externa configurada
+      if (exitSequence.targetUrl) {
+        setTimeout(() => {
+          window.location.href = exitSequence.targetUrl;
+        }, 2600);
+      }
+    }
+
+    // Exponer función de testeo para arnés E2E automatizado
+    window.triggerSynerxExit = startExitSequence;
 
     form.addEventListener('submit', async ev => {
       ev.preventDefault();
@@ -2183,31 +2593,18 @@
         email: emailVal || null,
         terminosAceptados: true,
         fecha: new Date().toISOString(),
-        origen: 'sinerx_3'
+        origen: 'synerx_6'
       };
 
       btn.disabled = true;
-      btnLabel.textContent = 'Registrando…';
+      btnLabel.textContent = 'Trascendiendo…';
       try {
-        await sendToBackend(rec);
         persistLocal(rec);
-        celebrate();
-        document.getElementById('success-text').textContent =
-          rec.email ? `Gracias, ${rec.nombre}. Lo contactaremos al ${rec.telefono} o en ${rec.email}.` :
-                      `Gracias, ${rec.nombre}. Lo contactaremos al ${rec.telefono}.`;
-        document.getElementById('success-id').textContent = `ID de registro: ${rec.id}`;
-        form.hidden = true;
-        successBox.hidden = false;
-        successBox.focus();
-        form.reset();
-        fields.terms.input.checked = false;
-        fields.terms.box.classList.remove('is-invalid');
-      } catch (err) {
-        statusEl.textContent = 'No pudimos completar el registro. Intente nuevamente en unos segundos.';
-      } finally {
-        btn.disabled = false;
-        btnLabel.textContent = 'Registrarme';
-      }
+        sendToBackend(rec); // Envío con keepalive sin bloquear cinemática
+      } catch (_) {}
+
+      // Iniciar la transición cinemática de salida inmediatamente
+      startExitSequence(rec);
     });
 
     document.getElementById('btn-new').addEventListener('click', () => {
@@ -2220,6 +2617,15 @@
     /* ========================================================================
        10. ARRANQUE
        ======================================================================== */
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        running = false;
+      } else if (state !== 'video' && !running) {
+        running = true;
+        last = performance.now();
+        requestAnimationFrame(frame);
+      }
+    });
     if (DATA) buildParticles();
     resize();
     stackedMQ.addEventListener ? stackedMQ.addEventListener('change', resize) : stackedMQ.addListener(resize);
@@ -2228,4 +2634,3 @@
   </script>
 </body>
 </html>
-
