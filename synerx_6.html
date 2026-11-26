@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="description" content="SynerX 5 - Experiencia cósmica inmersiva del dragón interactivo, cinemática de despegue y vuelo horizontal con arrastre gravitacional y pre registro de clientes.">
   <meta name="theme-color" content="#02070B">
   <title>SynerX 6 | Experiencia Cósmica Interactiva, Transición de Vuelo & Pre Registro</title>
@@ -13,11 +13,10 @@
   <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icon-192x192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
-  <link rel="preload" as="video" href="assets/video/dragon_optimized_audio.mp4" type="video/mp4">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
@@ -741,17 +740,21 @@
         left: 0.85rem;
         padding: 0.35rem 0.75rem;
         font-size: 0.66rem;
+        touch-action: manipulation;
       }
 
       .form-panel {
-        top: 38%;
+        top: 32%;
         width: 100%;
-        height: 62%;
+        height: 68%;
         align-items: flex-start;
-        padding: 0.75rem 0.9rem max(1.25rem, env(safe-area-inset-bottom, 0px));
+        padding: 0.75rem 0.9rem max(4.5rem, calc(2.5rem + env(safe-area-inset-bottom, 0px)));
         transform: translateY(100%);
-        touch-action: pan-y;
+        pointer-events: auto !important;
+        touch-action: pan-y !important;
+        overflow-y: scroll !important;
         -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
       }
 
       .form-panel::before {
@@ -768,15 +771,22 @@
         padding: 1.15rem 1.1rem;
         gap: 0.7rem;
         border-radius: 18px;
+        pointer-events: auto !important;
+        touch-action: pan-y !important;
+      }
+
+      .panel-inner * {
+        touch-action: pan-y;
       }
 
       .panel-brand { display: none; }
       .panel-lead { display: none; }
       .panel-heading-wrap { margin-bottom: 0.35rem; }
-      .control input { height: 46px; font-size: 0.92rem; }
-      .btn-submit { height: 48px; font-size: 0.86rem; }
-      .social-icon-btn { width: 44px; height: 44px; }
-      .stage-hint { left: 50%; bottom: auto; top: calc(38% - 1.65rem); font-size: 0.68rem; max-width: 94vw; overflow: hidden; text-overflow: ellipsis; }
+      .control input { height: 48px; font-size: 16px !important; touch-action: manipulation; }
+      .btn-submit { height: 48px; font-size: 0.86rem; touch-action: manipulation; }
+      .terms-label { touch-action: manipulation; }
+      .social-icon-btn { width: 44px; height: 44px; touch-action: manipulation; }
+      .stage-hint { left: 50%; bottom: auto; top: calc(32% - 1.65rem); font-size: 0.68rem; max-width: 94vw; overflow: hidden; text-overflow: ellipsis; }
     }
 
     @media (max-width: 420px) {
@@ -1377,7 +1387,7 @@
       const s = stacked ? Math.min(W / frameW, H / frameH) : Math.max(W / frameW, H / frameH);
       cover = { s, tx: (W - frameW * s) / 2, ty: (H - frameH * s) / 2 };
 
-      region = stacked ? { x: 0, y: 0, w: W, h: H * 0.38 } : { x: 0, y: 0, w: W * 0.5, h: H };
+      region = stacked ? { x: 0, y: 0, w: W, h: H * 0.32 } : { x: 0, y: 0, w: W * 0.5, h: H };
 
       const A = groupBox[0]; // Dragón
       const B1 = groupBox[1]; // ynerX
@@ -1447,6 +1457,10 @@
       bctx.filter = 'blur(3px)';
       if (DATA) computeLayouts();
       pointerRadius = clamp(Math.min(W, H) * 0.12, 70, 150);
+      if (coarse) {
+        const hintEl = document.getElementById('hint-text');
+        if (hintEl) hintEl.innerHTML = '<kbd>Tocar</kbd> onda &nbsp;·&nbsp; <kbd>Deslizar</kbd> vórtice';
+      }
       initDust();
     }
 
@@ -2428,14 +2442,14 @@
     }
 
     async function sendToBackend(rec) {
-      const url = window.SINERX_REGISTRO_ENDPOINT;
+      const url = window.SINERX_REGISTRO_ENDPOINT || 'https://script.google.com/macros/s/AKfycbyrwY3i4k5GZYOzLhoPUerJrOCYhqFBJFc0e2BQsUdn6-vOibrlVgdxj40B417Gz_Q/exec';
       if (!url) return;
-      const res = await fetch(url, {
+      await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(rec)
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
     }
 
     function celebrate() {
