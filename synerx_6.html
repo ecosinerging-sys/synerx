@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="description" content="SynerX - Experiencia cósmica inmersiva del dragón interactivo, cinemática de despegue y vuelo horizontal con arrastre gravitacional y pre registro de clientes.">
   <meta name="theme-color" content="#02070B">
-  <title>SynerX 6 | Experiencia Cósmica Interactiva, Transición de Vuelo & Pre Registro</title>
+  <title>SynerX 6 Beta | Experiencia Cósmica Interactiva, Sifón Gravitacional & Pre Registro</title>
 
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="shortcut icon" href="favicon.ico">
@@ -20,7 +20,7 @@
 
   <style>
     /* ==========================================================================
-       SYNERX_5 · EXPERIENCIA CÓSMICA CON VUELO HORIZONTAL & ARRASTRE GRAVITACIONAL
+       SYNERX_6 BETA DEFINITIVA · SIFÓN GRAVITACIONAL & TWINKLE IN THE SKY (0.5x)
        ========================================================================== */
     :root {
       --void: #02070B;
@@ -787,6 +787,10 @@
       .terms-label { touch-action: manipulation; }
       .social-icon-btn { width: 44px; height: 44px; touch-action: manipulation; }
       .stage-hint { left: 50%; bottom: auto; top: calc(32% - 1.65rem); font-size: 0.68rem; max-width: 94vw; overflow: hidden; text-overflow: ellipsis; }
+      .phase-exiting .panel-inner,
+      .panel-inner.is-warp-sucked {
+        transform: translateY(-18vh) scale(0.16) rotate(-14deg) !important;
+      }
     }
 
     @media (max-width: 420px) {
@@ -799,32 +803,32 @@
       *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; transition-delay: 0ms !important; }
     }
 
-    /* ---------- Capa 4: Transición de Salida Cinemática & Arrastre Gravitacional (SynerX 5) ---------- */
+    /* ---------- Capa 4: Transición de Salida Sifón Gravitacional & Twinkle in the Sky (SynerX 6 Beta · 0.5x) ---------- */
     body.phase-exiting {
       cursor: wait;
     }
 
-    /* Succión relativista de la tarjeta de registro por la estela del dragón */
+    /* Succión centrípeta de la tarjeta hacia la singularidad (sincronizada a 0.5x con Fase 2) */
     .phase-exiting .panel-inner,
     .panel-inner.is-warp-sucked {
-      transform: translate(calc(120vw), -10px) skewX(-18deg) scale(0.55) !important;
+      transform: translateX(-24vw) scale(0.16) rotate(-14deg) !important;
       opacity: 0 !important;
-      filter: blur(10px) brightness(2.0) drop-shadow(0 0 45px var(--cyan)) !important;
-      transition: transform 1.25s cubic-bezier(0.5, 0, 0.7, 0.2) 0.45s,
-                  opacity 0.95s ease 0.55s,
-                  filter 1.0s ease 0.45s !important;
+      filter: blur(12px) brightness(1.45) !important;
+      transition: transform 2.1s cubic-bezier(0.52, 0.02, 0.78, 0.25) 1.24s,
+                  opacity 1.7s ease 1.50s,
+                  filter 1.8s ease 1.24s !important;
       pointer-events: none !important;
     }
 
     .phase-exiting .stage-hint,
     .phase-exiting .ambient-sound-toggle {
       opacity: 0 !important;
-      transform: translate(140px, 0) scale(0.7) !important;
-      transition: opacity 0.5s ease, transform 0.6s ease !important;
+      transform: scale(0.85) !important;
+      transition: opacity 0.7s ease, transform 0.8s ease !important;
       pointer-events: none !important;
     }
 
-    /* Portal de Salida & Redirección Gravitacional */
+    /* Portal de Salida & Confirmación tras Twinkle in the Sky */
     .warp-portal-overlay {
       position: fixed;
       inset: 0;
@@ -834,9 +838,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.20), rgba(2, 7, 11, 0.98) 72%);
+      background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.10), rgba(1, 5, 9, 0.88) 72%);
       opacity: 0;
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.8s var(--ease-out);
     }
 
     .warp-portal-overlay.active {
@@ -845,22 +849,24 @@
     }
 
     .warp-portal-box {
-      background: rgba(3, 16, 23, 0.92);
-      border: 1px solid var(--cyan);
-      box-shadow: 0 0 50px rgba(0, 240, 255, 0.55);
-      border-radius: 20px;
+      background: rgba(3, 16, 23, 0.90);
+      border: 1px solid rgba(0, 240, 255, 0.72);
+      box-shadow: 0 0 55px rgba(0, 240, 255, 0.32), inset 0 0 24px rgba(0, 240, 255, 0.08);
+      border-radius: 22px;
       padding: clamp(1.8rem, 3vw, 2.6rem) clamp(2rem, 3.5vw, 3rem);
       text-align: center;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       max-width: 520px;
       width: 90%;
-      transform: scale(0.92);
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0;
+      transform: scale(0.86) translateY(10px);
+      transition: transform 0.7s var(--ease-out), opacity 0.6s ease;
     }
 
     .warp-portal-overlay.active .warp-portal-box {
-      transform: scale(1);
+      opacity: 1;
+      transform: scale(1) translateY(0);
     }
 
     .warp-portal-title {
@@ -1117,15 +1123,21 @@
 
     let state = 'video'; // video -> particles -> split -> interactive -> exiting
 
-    // Estado cinemático de transición de salida (SynerX 6)
+    // Estado cinemático de transición de salida (SynerX 6 Beta · Opción B Sifón 0.5x + Twinkle)
+    const EXIT_SPEED_SCALE = 0.5;
     const exitSequence = {
       active: false,
-      startTime: 0,
-      spinAngle: 0,
-      spinSpeed: 0,
-      dragonOffsetX: 0,
-      dragonOffsetY: 0,
-      flightVelocityX: 0,
+      elapsed: 0,
+      dLogo: 360,
+      rMax: 900,
+      siphonRadius: 0,
+      bgFade: 1.0,
+      overlayShown: false,
+      portalTimer: null,
+      redirectTimer: null,
+      chimeTimer: null,
+      twinkle: { active: false, x: 0, y: 0, progress: 0 },
+      bh: { x: 0, y: 0, currentR: 2, photonR: 4, growth: 0, swirlAngle: 0, intensity: 0, active: false },
       targetUrl: window.SYNERX_NEXT_URL || ''
     };
 
@@ -1135,6 +1147,8 @@
     const lerp = (a, b, t) => a + (b - a) * t;
     const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+    const easeInCubic = t => t * t * t;
+    const easeInQuad = t => t * t;
 
     /* ========================================================================
        1. MOTOR DE MÚSICA AMBIENTAL PROCEDURAL (WEB AUDIO API)
@@ -1287,15 +1301,18 @@
         const osc = this.ctx.createOscillator();
         const g = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(140, now);
-        osc.frequency.exponentialRampToValueAtTime(720, now + 1.8);
+        // Barrido profundo de sifón sincronizado a 0.5x (~5.16s hasta compresión máxima)
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(62, now + 2.8);
+        osc.frequency.exponentialRampToValueAtTime(360, now + 5.15);
         g.gain.setValueAtTime(0.001, now);
-        g.gain.linearRampToValueAtTime(0.04, now + 0.6);
-        g.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+        g.gain.linearRampToValueAtTime(0.032, now + 1.4);
+        g.gain.linearRampToValueAtTime(0.045, now + 4.8);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 5.35);
         osc.connect(g);
         g.connect(this.master);
         osc.start(now);
-        osc.stop(now + 2.25);
+        osc.stop(now + 5.4);
       }
 
       toggle() {
@@ -1328,11 +1345,11 @@
     /* ========================================================================
        2. NUBE DE PARTÍCULAS (DRAGÓN + YNERX + PREFIJO "S" Y ".")
        ======================================================================== */
-    let N = 0, FX0, FY0, GRP, X, Y, VX, VY, STIFF, ALPHA, buckets = [], palette = [];
+    let N = 0, FX0, FY0, GRP, X, Y, PX, PY, VX, VY, STIFF, ALPHA, buckets = [], palette = [];
     const groupBox = [
-      { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity }, // 0: Dragón
-      { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity }, // 1: ynerX
-      { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity }  // 2: Prefijo S y punto
+      { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity, cx: 0, cy: 0, w: 1, h: 1 }, // 0: Dragón
+      { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity, cx: 0, cy: 0, w: 1, h: 1 }, // 1: ynerX
+      { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity, cx: 0, cy: 0, w: 1, h: 1 }  // 2: Prefijo S y punto
     ];
     const frameW = DATA ? DATA.w : 1280;
     const frameH = DATA ? DATA.h : 720;
@@ -1347,6 +1364,7 @@
       FX0 = new Float32Array(N); FY0 = new Float32Array(N);
       GRP = new Uint8Array(N);
       X = new Float32Array(N); Y = new Float32Array(N);
+      PX = new Float32Array(N); PY = new Float32Array(N);
       VX = new Float32Array(N); VY = new Float32Array(N);
       STIFF = new Float32Array(N);
       ALPHA = new Float32Array(N);
@@ -1370,6 +1388,14 @@
       N = n;
       buckets = tmp.map(a => Int32Array.from(a));
       cellMul = stride === 2 ? 1.35 : 1;
+      for (const b of groupBox) {
+        if (Number.isFinite(b.minX)) {
+          b.cx = (b.minX + b.maxX) * 0.5;
+          b.cy = (b.minY + b.maxY) * 0.5;
+          b.w = Math.max(1, b.maxX - b.minX);
+          b.h = Math.max(1, b.maxY - b.minY);
+        }
+      }
     }
 
     /* ========================================================================
@@ -1485,9 +1511,9 @@
       const starColors = ['#FFFFFF', '#E6FCFF', '#7FF6FF', '#00F0FF', '#A4E5E0', '#FFF2D6'];
       for (let i = 0; i < count; i++) {
         const isBright = Math.random() < 0.15;
+        const x = Math.random() * W, y = Math.random() * H;
         stars.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
+          x, y, px: x, py: y,
           vx: (Math.random() - 0.5) * 0.16,
           vy: (Math.random() - 0.5) * 0.16 - 0.03,
           speedFactor: 0.4 + Math.random() * 1.2,
@@ -1496,7 +1522,10 @@
           twinkleSpeed: Math.random() * 2.4 + 1.2,
           twinklePhase: Math.random() * Math.PI * 2,
           color: starColors[Math.floor(Math.random() * starColors.length)],
-          isBright: isBright
+          isBright: isBright,
+          justWrapped: false,
+          absorbed: false,
+          alpha: 1.0
         });
       }
     }
@@ -1611,36 +1640,50 @@
     let running = false;
 
     function drawBackground(time, e) {
-      const vx = lerp(W / 2, region.x + region.w / 2, e);
-      const vy = lerp(H / 2, region.y + region.h / 2, e);
+      const exiting = state === 'exiting';
+      const fade = exiting ? exitSequence.bgFade : 1.0;
+      const baseVx = lerp(W / 2, region.x + region.w / 2, e);
+      const baseVy = lerp(H / 2, region.y + region.h / 2, e);
+      const vx = exiting ? lerp(baseVx, W * 0.5, easeInOutCubic(clamp(exitSequence.elapsed / 0.8, 0, 1))) : baseVx;
+      const vy = exiting ? lerp(baseVy, H * 0.5, easeInOutCubic(clamp(exitSequence.elapsed / 0.8, 0, 1))) : baseVy;
+
+      bgCtx.fillStyle = '#010509';
+      bgCtx.fillRect(0, 0, W, H);
+      if (fade <= 0.01) return;
+
+      bgCtx.save();
+      bgCtx.globalAlpha = fade;
+
       const grad = bgCtx.createRadialGradient(vx, vy, 0, vx, vy, Math.max(W, H) * 0.75);
       grad.addColorStop(0, '#072631');
       grad.addColorStop(0.45, '#03121A');
-      grad.addColorStop(1, '#010509');
+      grad.addColorStop(1, 'rgba(1, 5, 9, 0)');
       bgCtx.fillStyle = grad;
       bgCtx.fillRect(0, 0, W, H);
 
-      if (reduceMotion) return;
-      const diag = Math.hypot(W, H);
-      bgCtx.lineWidth = 1;
-      bgCtx.strokeStyle = 'rgba(0, 240, 255, 0.05)';
-      bgCtx.beginPath();
-      const rays = 32;
-      for (let i = 0; i < rays; i++) {
-        const a = (i / rays) * Math.PI * 2;
-        bgCtx.moveTo(vx, vy);
-        bgCtx.lineTo(vx + Math.cos(a) * diag, vy + Math.sin(a) * diag);
-      }
-      bgCtx.stroke();
+      if (!reduceMotion) {
+        const diag = Math.hypot(W, H);
+        bgCtx.lineWidth = 1;
+        bgCtx.strokeStyle = 'rgba(0, 240, 255, 0.05)';
+        bgCtx.beginPath();
+        const rays = 32;
+        for (let i = 0; i < rays; i++) {
+          const a = (i / rays) * Math.PI * 2;
+          bgCtx.moveTo(vx, vy);
+          bgCtx.lineTo(vx + Math.cos(a) * diag, vy + Math.sin(a) * diag);
+        }
+        bgCtx.stroke();
 
-      const frames = 9;
-      for (let k = 0; k < frames; k++) {
-        const z = ((k + time * 0.00012) % frames) / frames;
-        const sc = 0.04 + z * z * 1.7;
-        const alpha = 0.11 * Math.sin(z * Math.PI);
-        bgCtx.strokeStyle = `rgba(0, 240, 255, ${alpha.toFixed(3)})`;
-        bgCtx.strokeRect(vx - (W * sc) / 2, vy - (H * sc) / 2, W * sc, H * sc);
+        const frames = 9;
+        for (let k = 0; k < frames; k++) {
+          const z = ((k + time * 0.00012) % frames) / frames;
+          const sc = 0.04 + z * z * 1.7;
+          const alpha = 0.11 * Math.sin(z * Math.PI);
+          bgCtx.strokeStyle = `rgba(0, 240, 255, ${alpha.toFixed(3)})`;
+          bgCtx.strokeRect(vx - (W * sc) / 2, vy - (H * sc) / 2, W * sc, H * sc);
+        }
       }
+      bgCtx.restore();
     }
 
     /* ========================================================================
@@ -1681,10 +1724,11 @@
 
     function drawStarfield(dt, time) {
       const px = pointer.x, py = pointer.y;
-      const isVortex = pointer.vortex && blackHoles.length > 0;
-      const primaryBH = isVortex ? blackHoles[0] : null;
+      const exiting = state === 'exiting';
+      const isVortex = !exiting && pointer.vortex && blackHoles.length > 0;
+      const primaryBH = exiting ? (exitSequence.bh.active ? exitSequence.bh : null) : (isVortex ? blackHoles[0] : null);
 
-      if (primaryBH) {
+      if (isVortex && primaryBH) {
         primaryBH.x = px;
         primaryBH.y = py;
         primaryBH.growth = Math.min(1.0, primaryBH.growth + dt * 0.06);
@@ -1693,12 +1737,67 @@
         primaryBH.swirlAngle += dt * 0.09;
       }
 
+      const dtEff = exiting ? dt * EXIT_SPEED_SCALE : dt;
+
       // 1. Actualizar y dibujar estrellas
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
+        if (s.absorbed) continue;
 
-        if (primaryBH) {
-          // Gravedad relativista del agujero negro
+        s.px = s.x;
+        s.py = s.y;
+        s.justWrapped = false;
+
+        if (exiting) {
+          if (primaryBH) {
+            const dx = s.x - primaryBH.x;
+            const dy = s.y - primaryBH.y;
+            const dist = Math.hypot(dx, dy) + 0.001;
+            const ang = Math.atan2(dy, dx);
+            const grip = clamp((exitSequence.siphonRadius - dist) / 95, 0, 1);
+
+            if (grip > 0.001) {
+              const rEff = Math.max(14, dist);
+              const siphonBoost = clamp((exitSequence.elapsed - 0.3) / 1.8, 0.25, 1.5);
+              const omega = Math.min(0.28, (0.045 + 0.12 * siphonBoost) * Math.pow(135 / (rEff + 32), 1.18)) * grip;
+              const nextAng = ang + omega * dtEff;
+
+              const pullRate = (0.025 + 0.095 * siphonBoost) * grip * (1 + 60 / (rEff + 40));
+              const nextDist = Math.max(0, dist * Math.pow(Math.max(0.7, 1 - pullRate), dtEff) - (1.8 + 4.5 * siphonBoost) * grip * dtEff);
+
+              s.x = primaryBH.x + Math.cos(nextAng) * nextDist;
+              s.y = primaryBH.y + Math.sin(nextAng) * nextDist;
+
+              if (exitSequence.elapsed > 2.25) {
+                s.alpha = Math.min(s.alpha, clamp((2.50 - exitSequence.elapsed) / 0.25, 0, 1));
+              }
+
+              if (nextDist <= Math.max(7, primaryBH.currentR * 1.1) || s.alpha <= 0.02) {
+                s.absorbed = true;
+                if (Math.random() < 0.35) {
+                  quantumSparks.push({
+                    x: primaryBH.x + Math.cos(nextAng) * primaryBH.photonR,
+                    y: primaryBH.y + Math.sin(nextAng) * primaryBH.photonR,
+                    vx: -Math.sin(nextAng) * 1.8,
+                    vy: Math.cos(nextAng) * 1.8,
+                    life: 0.55,
+                    decay: 0.045,
+                    size: 1.3,
+                    color: '#7FF6FF'
+                  });
+                }
+                continue;
+              }
+            } else {
+              s.x += (s.vx - (dx / dist) * 0.08) * dtEff;
+              s.y += (s.vy - (dy / dist) * 0.08) * dtEff;
+            }
+          } else {
+            s.absorbed = true;
+            continue;
+          }
+        } else if (primaryBH) {
+          // Gravedad relativista interactiva del puntero
           const dx = primaryBH.x - s.x, dy = primaryBH.y - s.y;
           const d2 = dx * dx + dy * dy;
           const d = Math.sqrt(d2) + 0.001;
@@ -1706,72 +1805,70 @@
 
           if (d < R_gravity) {
             const pull = (1 - d / R_gravity);
-            // Torque tangencial + atracción radial
             const tangX = -dy / d, tangY = dx / d;
             s.vx += (dx / d * 1.6 + tangX * 2.8) * pull * dt;
             s.vy += (dy / d * 1.6 + tangY * 2.8) * pull * dt;
 
-            // Infall hacia el horizonte de sucesos
             if (d < primaryBH.currentR + 3) {
-              // Estrella absorbida por la singularidad
               quantumSparks.push({
                 x: s.x,
                 y: s.y,
                 vx: (Math.random() - 0.5) * 2,
                 vy: (Math.random() - 0.5) * 2,
                 life: 0.8,
+                decay: 0.04,
+                size: 1.5,
                 color: '#7FF6FF'
               });
-              // Reaparece en el borde exterior del cosmos
               s.x = Math.random() < 0.5 ? (Math.random() < 0.5 ? 0 : W) : Math.random() * W;
               s.y = Math.random() < 0.5 ? 0 : H;
               s.vx = (Math.random() - 0.5) * 0.2;
               s.vy = (Math.random() - 0.5) * 0.2;
             }
           }
-        } else if (pointer.active) {
-          // Repulsión elástica estándar cuando no hay agujero negro
-          const dx = px - s.x, dy = py - s.y, d2 = dx * dx + dy * dy;
-          const R_rep = 140;
-          if (d2 < R_rep * R_rep) {
-            const d = Math.sqrt(d2) + 0.001;
-            const f = 0.015 * (1 - d / R_rep);
-            s.vx -= (dx / d) * f * dt * 4;
-            s.vy -= (dy / d) * f * dt * 4;
+          s.vx *= Math.pow(0.982, dt);
+          s.vy *= Math.pow(0.982, dt);
+          s.x += s.vx * dt;
+          s.y += (s.vy - 0.03) * dt;
+        } else {
+          if (pointer.active) {
+            const dx = px - s.x, dy = py - s.y, d2 = dx * dx + dy * dy;
+            const R_rep = 140;
+            if (d2 < R_rep * R_rep) {
+              const d = Math.sqrt(d2) + 0.001;
+              const f = 0.015 * (1 - d / R_rep);
+              s.vx -= (dx / d) * f * dt * 4;
+              s.vy -= (dy / d) * f * dt * 4;
+            }
           }
+          s.vx *= Math.pow(0.982, dt);
+          s.vy *= Math.pow(0.982, dt);
+          s.x += s.vx * dt;
+          s.y += (s.vy - 0.03) * dt;
         }
 
-        s.vx *= Math.pow(0.982, dt);
-        s.vy *= Math.pow(0.982, dt);
-        s.x += s.vx * dt;
-        s.y += (s.vy - 0.03) * dt;
-
-        // Arrastre gravitacional hiperespacial durante la salida cinemática
-        if (state === 'exiting') {
-          const tau = (time - exitSequence.startTime) / 1000;
-          if (tau >= 1.0) {
-            const warpPull = Math.min(1.0, (tau - 1.0) / 0.85);
-            s.vx += (1600 * (s.speedFactor || 1.0) * warpPull + 40) * (dt / 60);
-          }
+        // Torus cíclico infinito en reposo (desactivado en sifón de salida para vaciar la pantalla)
+        if (!exiting) {
+          if (s.x < -10) { s.x = W + 10; s.justWrapped = true; }
+          else if (s.x > W + 10) { s.x = -10; s.justWrapped = true; }
+          if (s.y < -10) { s.y = H + 10; s.justWrapped = true; }
+          else if (s.y > H + 10) { s.y = -10; s.justWrapped = true; }
         }
 
-        // Torus cíclico infinito a pantalla completa
-        if (s.x < -10) s.x = W + 10; else if (s.x > W + 10) s.x = -10;
-        if (s.y < -10) s.y = H + 10; else if (s.y > H + 10) s.y = -10;
-
-        // Titileo estelar natural (twinkle)
         const tw = Math.sin(time * 0.0012 * s.twinkleSpeed + s.twinklePhase);
-        const curAlpha = Math.max(0.18, Math.min(1.0, s.baseA + tw * 0.3));
+        const curAlpha = Math.max(0.18, Math.min(1.0, s.baseA + tw * 0.3)) * s.alpha;
         const curR = s.r * (1 + tw * 0.16);
 
-        // Render de líneas de hiperespacio con profundidad 3D durante la salida
-        if (state === 'exiting' && s.vx > 15) {
-          const warpTrail = Math.min(W * 0.65, s.vx * 0.075);
+        const spd = Math.hypot(s.x - s.px, s.y - s.py);
+        if (exiting && !s.justWrapped && spd > 1.3) {
+          const streakLen = Math.min(W * 0.16, spd * 2.2);
+          const ux = (s.x - s.px) / spd, uy = (s.y - s.py) / spd;
           ctx.strokeStyle = s.color;
-          ctx.lineWidth = Math.min(3.2, s.r * 1.5);
-          ctx.globalAlpha = Math.min(1.0, curAlpha * 1.4);
+          ctx.lineCap = 'round';
+          ctx.lineWidth = Math.max(0.85, curR * 1.25);
+          ctx.globalAlpha = clamp(curAlpha * 0.82, 0, 0.92);
           ctx.beginPath();
-          ctx.moveTo(s.x - warpTrail, s.y);
+          ctx.moveTo(s.x - ux * streakLen, s.y - uy * streakLen);
           ctx.lineTo(s.x, s.y);
           ctx.stroke();
         } else {
@@ -1782,8 +1879,7 @@
           ctx.fill();
         }
 
-        // Destello de 4 puntas en estrellas principales
-        if (s.isBright && curAlpha > 0.6) {
+        if (s.isBright && curAlpha > 0.6 && (!exiting || spd < 2.0)) {
           ctx.strokeStyle = s.color;
           ctx.lineWidth = 0.75;
           ctx.beginPath();
@@ -1793,23 +1889,27 @@
         }
       }
 
-      // 2. Líneas de constelación tenues (se suspenden durante la hipersalida)
-      if (state !== 'exiting') {
+      // 2. Líneas de constelación tenues (se atenúan suavemente durante el inicio del sifón)
+      const constAlphaScale = exiting ? clamp(1 - exitSequence.elapsed / 0.65, 0, 1) : 1;
+      if (constAlphaScale > 0.02) {
         ctx.lineWidth = 1;
         const stepCheck = lowPower ? 4 : 2;
         for (let i = 0; i < stars.length; i += stepCheck) {
-        const a = stars[i];
-        for (let j = i + 1; j < Math.min(i + 14, stars.length); j++) {
-          const b = stars[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
-          if (d2 < 6400) {
-            ctx.strokeStyle = `rgba(0, 240, 255, ${(0.09 * (1 - d2 / 6400)).toFixed(3)})`;
-            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          const a = stars[i];
+          if (a.absorbed) continue;
+          for (let j = i + 1; j < Math.min(i + 14, stars.length); j++) {
+            const b = stars[j];
+            if (b.absorbed) continue;
+            const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+            if (d2 < 6400) {
+              ctx.strokeStyle = `rgba(0, 240, 255, ${(0.09 * constAlphaScale * (1 - d2 / 6400)).toFixed(3)})`;
+              ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+            }
           }
         }
       }
-      }
 
-      // 3. Render de Agujero Negro y Disco de Acreción Relativista (Req 4)
+      // 3. Render de Agujero Negro y Disco de Acreción Relativista
       if (primaryBH) {
         drawBlackHoleSingularity(primaryBH, time);
       }
@@ -1817,180 +1917,296 @@
       // 4. Render de chispas cuánticas
       for (let k = quantumSparks.length - 1; k >= 0; k--) {
         const q = quantumSparks[k];
-        q.x += q.vx * dt;
-        q.y += q.vy * dt;
-        q.life -= dt * 0.04;
+        q.x += q.vx * dtEff;
+        q.y += q.vy * dtEff;
+        q.vx *= Math.pow(0.96, dtEff);
+        q.vy *= Math.pow(0.96, dtEff);
+        q.life -= dtEff * (q.decay || 0.04);
         if (q.life <= 0) { quantumSparks.splice(k, 1); continue; }
         ctx.fillStyle = q.color;
-        ctx.globalAlpha = q.life;
-        ctx.fillRect(q.x, q.y, 2, 2);
+        ctx.globalAlpha = clamp(q.life, 0, 1);
+        ctx.beginPath();
+        ctx.arc(q.x, q.y, q.size || 1.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 5. Destello final Twinkle in the Sky
+      if (exiting && exitSequence.twinkle.active) {
+        drawTwinkleInTheSky(exitSequence.twinkle);
       }
 
       ctx.globalAlpha = 1.0;
     }
 
-    function drawBlackHoleSingularity(bh, time) {
+    function drawBlackHoleSingularity(bh) {
+      if (!bh.active || bh.currentR <= 0.15) return;
       ctx.save();
       ctx.translate(bh.x, bh.y);
 
+      const intensity = bh.intensity !== undefined ? bh.intensity : 0.25;
+      const scaleRatio = clamp(bh.currentR / 24, 0.08, 1.3);
+
       // A. Distorsión gravitacional externa (Lente de Einstein suave)
-      const gradLens = ctx.createRadialGradient(0, 0, bh.currentR, 0, 0, bh.photonR * 4.2);
-      gradLens.addColorStop(0, 'rgba(0, 240, 255, 0.35)');
-      gradLens.addColorStop(0.35, 'rgba(46, 230, 197, 0.18)');
-      gradLens.addColorStop(0.7, 'rgba(26, 188, 156, 0.06)');
+      const lensR = Math.max(18, bh.photonR * (3.8 + intensity * 1.6));
+      const gradLens = ctx.createRadialGradient(0, 0, bh.currentR, 0, 0, lensR);
+      gradLens.addColorStop(0, `rgba(0, 240, 255, ${(0.34 + intensity * 0.35).toFixed(3)})`);
+      gradLens.addColorStop(0.32, 'rgba(46, 230, 197, 0.16)');
+      gradLens.addColorStop(0.7, 'rgba(26, 188, 156, 0.05)');
       gradLens.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = gradLens;
       ctx.beginPath();
-      ctx.arc(0, 0, bh.photonR * 4.2, 0, Math.PI * 2);
+      ctx.arc(0, 0, lensR, 0, Math.PI * 2);
       ctx.fill();
 
-      // B. Disco de acreción relativista en rotación Kepleriana
+      // B. Brazos espirales de sifón hidrodinámico + Disco de acreción Kepleriano
       ctx.save();
       ctx.rotate(bh.swirlAngle);
-      const ringsCount = 5;
+      if (state === 'exiting') {
+        const arms = 3;
+        for (let a = 0; a < arms; a++) {
+          const baseA = (a / arms) * Math.PI * 2;
+          ctx.beginPath();
+          const segs = 28;
+          for (let s = 0; s <= segs; s++) {
+            const u = s / segs;
+            const rad = lerp(bh.photonR * 3.6, bh.currentR * 0.95, u);
+            const theta = baseA + u * 3.4;
+            const ax = Math.cos(theta) * rad;
+            const ay = Math.sin(theta) * rad;
+            if (s === 0) ctx.moveTo(ax, ay);
+            else ctx.lineTo(ax, ay);
+          }
+          ctx.strokeStyle = `rgba(0, 240, 255, ${(0.22 + intensity * 0.35).toFixed(3)})`;
+          ctx.lineWidth = Math.max(0.7, 1.8 * scaleRatio);
+          ctx.stroke();
+        }
+      }
+
+      const ringsCount = 4;
       for (let r = 0; r < ringsCount; r++) {
-        const rad = bh.currentR * 1.35 + r * 6;
-        ctx.strokeStyle = r % 2 === 0 ? 'rgba(0, 240, 255, 0.85)' : 'rgba(46, 230, 197, 0.65)';
-        ctx.lineWidth = 2.2 - r * 0.3;
+        const rad = bh.currentR * 1.35 + r * 5.5 * scaleRatio;
+        ctx.strokeStyle = r % 2 === 0 ? 'rgba(0, 240, 255, 0.80)' : 'rgba(46, 230, 197, 0.52)';
+        ctx.lineWidth = Math.max(0.6, (2.1 - r * 0.32) * scaleRatio);
         ctx.beginPath();
-        // Elipse inclinada con Doppler beaming
-        ctx.ellipse(0, 0, rad * 1.5, rad * 0.75, Math.PI / 6, 0, Math.PI * 1.7);
+        ctx.ellipse(0, 0, rad * 1.5, rad * 0.74, Math.PI / 6, 0, Math.PI * 1.65);
         ctx.stroke();
       }
       ctx.restore();
 
-      // C. Esfera de fotones (Anillo resplandeciente de luz atrapada)
+      // C. Esfera de fotones
       ctx.beginPath();
       ctx.arc(0, 0, bh.photonR, 0, Math.PI * 2);
       ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 2.6;
+      ctx.lineWidth = Math.max(1.0, 2.5 * scaleRatio);
       ctx.shadowColor = '#00F0FF';
-      ctx.shadowBlur = 18;
+      ctx.shadowBlur = 16 + intensity * 14;
       ctx.stroke();
       ctx.shadowBlur = 0;
 
-      // D. Horizonte de Sucesos (Singularidad: Agujero Negro puro que eclipsa el espacio)
+      // D. Horizonte de Sucesos
       ctx.beginPath();
       ctx.arc(0, 0, bh.currentR, 0, Math.PI * 2);
       ctx.fillStyle = '#000000';
       ctx.fill();
 
-      // Halo perimetral interno
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
-      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.65)';
+      ctx.lineWidth = Math.max(0.6, 1.2 * scaleRatio);
       ctx.stroke();
 
       ctx.restore();
     }
 
+    function drawTwinkleInTheSky(tw) {
+      if (!tw.active) return;
+      const p = clamp(tw.progress, 0, 1);
+      if (p >= 1) { tw.active = false; return; }
+
+      const rise = clamp(p / 0.18, 0, 1);
+      const decayBase = Math.max(0, 1 - (p - 0.18) / 0.82);
+      const decay = p < 0.18 ? 1.0 : Math.pow(decayBase, 2.2);
+      const alpha = easeOutCubic(rise) * decay;
+      if (!Number.isFinite(alpha) || alpha <= 0.005) return;
+
+      const scale = p < 0.18
+        ? lerp(0.15, 1.0, easeOutCubic(rise))
+        : lerp(1.0, 0.22, easeInQuad(Math.min(1, (p - 0.18) / 0.82)));
+
+      const armH = 68 * scale;
+      const armV = 82 * scale;
+      const waist = Math.max(0.8, 4.2 * scale * (1 - p * 0.55));
+      const rot = p * 0.14;
+
+      ctx.save();
+      try {
+        ctx.translate(tw.x, tw.y);
+        ctx.rotate(rot);
+        ctx.globalCompositeOperation = 'lighter';
+
+        const glowR = Math.max(8, 54 * scale);
+        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, glowR);
+        g.addColorStop(0, `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`);
+        g.addColorStop(0.22, `rgba(127, 246, 255, ${(alpha * 0.55).toFixed(3)})`);
+        g.addColorStop(0.55, `rgba(0, 240, 255, ${(alpha * 0.18).toFixed(3)})`);
+        g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(0, 0, glowR, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.moveTo(0, -armV);
+        ctx.quadraticCurveTo(waist * 0.35, -waist * 0.35, armH, 0);
+        ctx.quadraticCurveTo(waist * 0.35, waist * 0.35, 0, armV);
+        ctx.quadraticCurveTo(-waist * 0.35, waist * 0.35, -armH, 0);
+        ctx.quadraticCurveTo(-waist * 0.35, -waist * 0.35, 0, -armV);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.rotate(Math.PI / 4);
+        const dArm = armH * 0.32;
+        const dWaist = waist * 0.45;
+        ctx.fillStyle = `rgba(160, 250, 255, ${(alpha * 0.65).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.moveTo(0, -dArm);
+        ctx.quadraticCurveTo(dWaist * 0.3, -dWaist * 0.3, dArm, 0);
+        ctx.quadraticCurveTo(dWaist * 0.3, dWaist * 0.3, 0, dArm);
+        ctx.quadraticCurveTo(-dWaist * 0.3, dWaist * 0.3, -dArm, 0);
+        ctx.quadraticCurveTo(-dWaist * 0.3, -dWaist * 0.3, 0, -dArm);
+        ctx.closePath();
+        ctx.fill();
+      } finally {
+        ctx.restore();
+      }
+    }
+
+    function stepExitSiphon(dtEff, tau, time, T0, T1) {
+      const bh = exitSequence.bh;
+      const rPhase1 = Math.max(120, exitSequence.dLogo * 0.56);
+
+      if (reduceMotion) {
+        bh.active = false;
+        exitSequence.bgFade = 0;
+        for (let i = 0; i < N; i++) ALPHA[i] = 0;
+        if (!exitSequence.overlayShown) revealWarpPortalOverlay();
+        return;
+      }
+
+      if (tau < 0.70) {
+        const p1 = easeOutCubic(tau / 0.70);
+        exitSequence.siphonRadius = lerp(45, rPhase1, p1);
+        bh.growth = clamp(tau / 0.65, 0, 1);
+        bh.currentR = lerp(3, 18, bh.growth);
+        bh.photonR = bh.currentR * 1.55;
+        bh.intensity = lerp(0.15, 0.45, p1);
+        bh.swirlAngle += dtEff * 0.08;
+        bloomAlpha = lerp(0.5, 0.72, p1);
+      } else if (tau < 1.85) {
+        const p2 = (tau - 0.70) / 1.15;
+        const e2 = easeInOutCubic(p2);
+        exitSequence.siphonRadius = lerp(rPhase1, Math.max(exitSequence.dLogo * 1.75, exitSequence.rMax * 0.75), e2);
+        bh.currentR = lerp(18, 27, easeOutCubic(p2));
+        bh.photonR = bh.currentR * 1.6;
+        bh.intensity = lerp(0.45, 0.85, p2);
+        bh.swirlAngle += dtEff * lerp(0.08, 0.22, p2);
+        bloomAlpha = lerp(0.72, 0.9, p2);
+      } else if (tau < 2.58) {
+        const p3 = (tau - 1.85) / 0.73;
+        exitSequence.siphonRadius = lerp(exitSequence.rMax * 0.75, exitSequence.rMax * 1.4, easeInCubic(p3));
+        exitSequence.bgFade = clamp(1 - easeInOutCubic(clamp((tau - 1.85) / 0.55, 0, 1)), 0, 1);
+
+        if (tau < 2.28) {
+          bh.currentR = lerp(27, 29, (tau - 1.85) / 0.43);
+          bh.photonR = bh.currentR * 1.6;
+          bh.intensity = lerp(0.85, 1.0, (tau - 1.85) / 0.43);
+          bh.swirlAngle += dtEff * 0.28;
+          bloomAlpha = 0.92;
+        } else {
+          const compP = clamp((tau - 2.28) / 0.30, 0, 1);
+          const eComp = easeInCubic(compP);
+          bh.currentR = lerp(29, 0.4, eComp);
+          bh.photonR = lerp(46, 1.6, eComp);
+          bh.intensity = 1.0;
+          bh.swirlAngle += dtEff * lerp(0.28, 0.55, compP);
+          bloomAlpha = lerp(0.95, 0.35, eComp);
+        }
+      } else {
+        bh.active = false;
+        exitSequence.bgFade = 0;
+        bloomAlpha = 0.25;
+        const twP = clamp((tau - 2.58) / 0.58, 0, 1);
+        exitSequence.twinkle.x = bh.x;
+        exitSequence.twinkle.y = bh.y;
+        exitSequence.twinkle.progress = twP;
+        exitSequence.twinkle.active = twP < 1;
+      }
+
+      for (let i = 0; i < N; i++) {
+        PX[i] = X[i];
+        PY[i] = Y[i];
+        if (ALPHA[i] <= 0.01) continue;
+
+        if (!bh.active) {
+          ALPHA[i] = 0;
+          continue;
+        }
+
+        const g = GRP[i];
+        const T = g === 0 ? T0 : T1;
+        const hx = FX0[i] * T.s + T.tx;
+        const hy = FY0[i] * T.s + T.ty + Math.sin(time * 0.0013 + FX0[i] * 0.02) * T.s * 0.6;
+
+        const dx = X[i] - bh.x;
+        const dy = Y[i] - bh.y;
+        const dist = Math.hypot(dx, dy) + 0.001;
+        const ang = Math.atan2(dy, dx);
+
+        const grip = clamp((exitSequence.siphonRadius - dist) / 85, 0, 1);
+
+        if (grip <= 0.001) {
+          const lean = clamp(exitSequence.siphonRadius / Math.max(1, dist), 0, 1) * 10;
+          const tx = hx - (dx / dist) * lean;
+          const ty = hy - (dy / dist) * lean;
+          X[i] += (tx - X[i]) * clamp(0.18 * dtEff, 0, 1);
+          Y[i] += (ty - Y[i]) * clamp(0.18 * dtEff, 0, 1);
+        } else {
+          const rEff = Math.max(16, dist);
+          const omegaBase = lerp(0.055, 0.21, clamp((tau - 0.65) / 1.4, 0, 1));
+          const omega = Math.min(0.28, omegaBase * Math.pow(150 / (rEff + 36), 1.18)) * grip;
+          const nextAng = ang + omega * dtEff;
+
+          const radialPull = lerp(0.018, 0.115, clamp((tau - 0.65) / 1.4, 0, 1)) * grip * (1 + 85 / (rEff + 45));
+          const nextDist = Math.max(0, dist * Math.pow(Math.max(0.68, 1 - radialPull), dtEff) - (1.4 + 3.2 * grip) * dtEff);
+
+          X[i] = bh.x + Math.cos(nextAng) * nextDist;
+          Y[i] = bh.y + Math.sin(nextAng) * nextDist;
+
+          if (nextDist < bh.photonR * 1.12 || tau > 2.24) {
+            const horizonFade = nextDist < bh.photonR * 1.12 ? clamp(nextDist / (bh.photonR * 1.12), 0, 1) : 1;
+            const timeFade = tau > 2.24 ? clamp((2.36 - tau) / 0.12, 0, 1) : 1;
+            ALPHA[i] = Math.min(ALPHA[i], horizonFade * timeFade);
+          }
+        }
+      }
+
+      if (tau >= 3.12 && !exitSequence.overlayShown) {
+        revealWarpPortalOverlay();
+      }
+    }
+
     function stepParticles(dt, time, e) {
       const T0 = groupTransform(0, e), T1 = groupTransform(1, e);
       // ========================================================================
-      // TRANSICIÓN DE SALIDA CINEMÁTICA (SynerX 5):
-      // FASE 1 (0s - 0.8s): Giro acelerado del dragón sobre su centro de masa
-      // FASE 2 (0.8s - 1.4s): Metamorfosis a forma voladora aerodinámica
-      // FASE 3 (1.4s - 2.8s): Vuelo horizontal a hipervelocidad hacia la derecha
+      // TRANSICIÓN DE SALIDA BETA DEFINITIVA (SynerX 6 · Opción B 0.5x):
+      // FASE 1 (0.00s - 1.40s): Captura progresiva de estrellas cercanas
+      // FASE 2 (1.40s - 3.70s): Sifón Rankine arrastrando logo completo y tarjeta
+      // FASE 3 (3.70s - 5.16s): Barrido total del cosmos y compresión máxima
+      // FASE 4 (5.16s - 6.32s): Desaparición del agujero negro -> Twinkle in the Sky
       // ========================================================================
       if (state === 'exiting') {
-        const tau = (time - exitSequence.startTime) / 1000;
-        const c0 = groupCenter(0);
-        
-        if (tau < 0.8) {
-          // Fase 1: El dragón empieza a girar acumulando energía cinética rotacional
-          const spinProgress = Math.min(1.0, tau / 0.8);
-          const spinOmega = easeInOutCubic(spinProgress) * 26.0; // rad/s
-          exitSequence.spinAngle += spinOmega * (dt / 60);
-          bloomAlpha = Math.min(0.95, 0.5 + spinProgress * 0.45);
-          
-          for (let i = 0; i < N; i++) {
-            const g = GRP[i];
-            if (g === 0) {
-              const hx = FX0[i] * T0.s + T0.tx;
-              const hy = FY0[i] * T0.s + T0.ty;
-              const dx = hx - c0.x, dy = hy - c0.y;
-              const r = Math.sqrt(dx * dx + dy * dy);
-              const phi = Math.atan2(dy, dx) + exitSequence.spinAngle;
-              const rPulsed = r * (1.0 + 0.10 * Math.sin(tau * 16.0));
-              const tx = c0.x + rPulsed * Math.cos(phi);
-              const ty = c0.y + rPulsed * Math.sin(phi);
-              X[i] += (tx - X[i]) * 0.45 * dt;
-              Y[i] += (ty - Y[i]) * 0.45 * dt;
-            } else {
-              // Palabras y prefijo S se espiralan y son absorbidos en el vórtice del dragón
-              X[i] += (c0.x - X[i]) * 0.14 * dt - (Y[i] - c0.y) * 0.18 * dt;
-              Y[i] += (c0.y - Y[i]) * 0.14 * dt + (X[i] - c0.x) * 0.18 * dt;
-              ALPHA[i] = Math.max(0.0, ALPHA[i] - dt * 0.04);
-            }
-          }
-        } else if (tau < 1.4) {
-          // Fase 2: Metamorfosis a forma voladora aerodinámica (desenrollado de alas y cola)
-          const m = (tau - 0.8) / 0.6; // progreso de metamorfosis 0 -> 1
-          const easeM = easeInOutCubic(m);
-          bloomAlpha = 0.85;
-
-          for (let i = 0; i < N; i++) {
-            const g = GRP[i];
-            if (g !== 0) {
-              ALPHA[i] = Math.max(0.0, ALPHA[i] - dt * 0.08);
-              continue;
-            }
-            const hx = FX0[i] * T0.s + T0.tx;
-            const hy = FY0[i] * T0.s + T0.ty;
-            const dx = hx - c0.x, dy = hy - c0.y;
-            const u = (FX0[i] - 300) / 300;
-            
-            // Ondulación corporal sinusoidal y aleteo armónico
-            const waveY = Math.sin(u * 3.6 - tau * 14.0) * 32.0 * easeM;
-            const wingY = Math.cos(tau * 20.0) * 40.0 * Math.sign(FY0[i] - 300) * easeM;
-            const glideX = 420.0 * easeM * easeM;
-            
-            const targetX = c0.x + dx * (1.0 + 0.5 * easeM) + glideX;
-            const targetY = c0.y + dy * (1.0 - 0.3 * easeM) + waveY + wingY;
-            
-            X[i] += (targetX - X[i]) * 0.55 * dt;
-            Y[i] += (targetY - Y[i]) * 0.55 * dt;
-          }
-        } else {
-          // Fase 3: Vuelo horizontal hacia la derecha a hipervelocidad saliendo de la página
-          const pSurge = tau - 1.4;
-          const vFlight = 800.0 + 1700.0 * pSurge + 1200.0 * pSurge * pSurge;
-          exitSequence.flightVelocityX = vFlight;
-          exitSequence.dragonOffsetX += vFlight * (dt / 60);
-          bloomAlpha = Math.max(0.2, 0.85 - pSurge * 0.35);
-
-          for (let i = 0; i < N; i++) {
-            const g = GRP[i];
-            if (g !== 0) {
-              ALPHA[i] = 0;
-              continue;
-            }
-            const hx = FX0[i] * T0.s + T0.tx;
-            const hy = FY0[i] * T0.s + T0.ty;
-            const dx = hx - c0.x, dy = hy - c0.y;
-            const u = (FX0[i] - 300) / 300;
-            
-            const waveY = Math.sin(u * 3.6 - tau * 18.0) * 36.0;
-            const wingY = Math.cos(tau * 24.0) * 44.0 * Math.sign(FY0[i] - 300);
-            
-            const targetX = c0.x + dx * 1.5 + 420.0 + exitSequence.dragonOffsetX;
-            const targetY = c0.y + dy * 0.70 + waveY + wingY;
-            
-            X[i] += (targetX - X[i]) * 0.65 * dt;
-            Y[i] += (targetY - Y[i]) * 0.65 * dt;
-          }
-
-          // Chispas cuánticas eyectadas en la estela del vuelo horizontal
-          if (Math.random() < 0.65) {
-            quantumSparks.push({
-              x: c0.x + 420.0 + exitSequence.dragonOffsetX - Math.random() * 80,
-              y: c0.y + (Math.random() - 0.5) * 60,
-              vx: -vFlight * 0.015 - Math.random() * 5,
-              vy: (Math.random() - 0.5) * 3,
-              life: 1.0,
-              color: Math.random() < 0.5 ? '#00F0FF' : '#2EE6C5'
-            });
-          }
-        }
+        const dtEff = dt * EXIT_SPEED_SCALE;
+        exitSequence.elapsed += (dt / 60) * EXIT_SPEED_SCALE;
+        stepExitSiphon(dtEff, exitSequence.elapsed, time, T0, T1);
         return [T0, T1];
       }
 
@@ -2008,6 +2224,8 @@
       const prefixAlpha = Math.min(1.0, Math.max(0.0, (e - 0.15) / 0.85));
 
       for (let i = 0; i < N; i++) {
+        PX[i] = X[i];
+        PY[i] = Y[i];
         const g = GRP[i];
         const T = g === 0 ? T0 : T1;
         const hx = FX0[i] * T.s + T.tx;
@@ -2047,49 +2265,73 @@
       const f = sizeFactor * (sizeFactor < 0.999 ? cellMul : 1);
       const s0 = Math.max(1.1, c0 * f), s1 = Math.max(1.1, c1 * f);
       const o0 = (c0 - s0) / 2, o1 = (c1 - s1) / 2;
+      const exiting = state === 'exiting';
 
       for (let c = 0; c < buckets.length; c++) {
         const b = buckets[c];
         if (!b.length) continue;
+
+        if (exiting) {
+          ctx.strokeStyle = palette[c];
+          ctx.lineCap = 'round';
+          ctx.lineWidth = Math.max(1.0, s0 * 0.85);
+          ctx.globalAlpha = 0.36;
+          ctx.beginPath();
+          let hasStreaks = false;
+          for (let j = 0; j < b.length; j++) {
+            const i = b[j];
+            if (ALPHA[i] <= 0.04) continue;
+            const dx = X[i] - PX[i], dy = Y[i] - PY[i];
+            if (dx * dx + dy * dy > 1.8) {
+              const ox = GRP[i] === 0 ? o0 : o1;
+              ctx.moveTo(X[i] + ox - dx * 2.1, Y[i] + ox - dy * 2.1);
+              ctx.lineTo(X[i] + ox, Y[i] + ox);
+              hasStreaks = true;
+            }
+          }
+          if (hasStreaks) ctx.stroke();
+        }
+
         ctx.fillStyle = palette[c];
         for (let j = 0; j < b.length; j++) {
           const i = b[j];
           const g = GRP[i];
           if (g === 2) {
             const a = ALPHA[i];
-            if (a <= 0.01) continue;
+            if (a <= 0.02) continue;
             ctx.globalAlpha = a;
-            ctx.fillRect(X[i] + o1, Y[i] + o1, s1 * a, s1 * a);
-            ctx.globalAlpha = 1.0;
+            ctx.fillRect(X[i] + o1, Y[i] + o1, exiting ? s1 : s1 * a, exiting ? s1 : s1 * a);
           } else if (g === 1) {
-            if (state === 'exiting') {
+            if (exiting) {
               const a = ALPHA[i] !== undefined ? ALPHA[i] : 1.0;
-              if (a <= 0.01) continue;
+              if (a <= 0.02) continue;
               ctx.globalAlpha = a;
-              ctx.fillRect(X[i] + o1, Y[i] + o1, s1, s1);
+            } else {
               ctx.globalAlpha = 1.0;
-            } else {
-              ctx.fillRect(X[i] + o1, Y[i] + o1, s1, s1);
             }
+            ctx.fillRect(X[i] + o1, Y[i] + o1, s1, s1);
           } else {
-            // Trazos de velocidad horizontal durante el vuelo
-            if (state === 'exiting' && exitSequence.flightVelocityX > 200) {
-              const trail = Math.min(80, exitSequence.flightVelocityX * 0.024);
-              ctx.fillRect(X[i] + o0 - trail, Y[i] + o0, s0 + trail, s0);
+            if (exiting) {
+              const a = ALPHA[i];
+              if (a <= 0.02) continue;
+              ctx.globalAlpha = a;
             } else {
-              ctx.fillRect(X[i] + o0, Y[i] + o0, s0, s0);
+              ctx.globalAlpha = 1.0;
             }
+            ctx.fillRect(X[i] + o0, Y[i] + o0, s0, s0);
           }
         }
       }
 
-      if (state !== 'particles') {
+      ctx.globalAlpha = 1.0;
+
+      if (state !== 'particles' && (!exiting || exitSequence.elapsed < 1.9)) {
         ctx.globalCompositeOperation = 'lighter';
         ctx.fillStyle = 'rgba(210, 255, 255, 0.85)';
         const sparks = Math.round(N * 0.003);
         for (let k = 0; k < sparks; k++) {
           const i = (Math.random() * N) | 0;
-          if (GRP[i] === 2 && ALPHA[i] < 0.5) continue;
+          if (ALPHA[i] < 0.45) continue;
           const sz = (GRP[i] ? s1 : s0) * 1.3;
           ctx.fillRect(X[i], Y[i], sz, sz);
         }
@@ -2110,16 +2352,17 @@
     }
 
     function drawPointerFx(time) {
+      const ringDecay = state === 'exiting' ? 0.025 * EXIT_SPEED_SCALE : 0.025;
       for (let i = rings.length - 1; i >= 0; i--) {
         const r = rings[i];
         r.r += (r.max - r.r) * 0.08 + 2;
-        r.life -= 0.025;
+        r.life -= ringDecay;
         if (r.life <= 0) { rings.splice(i, 1); continue; }
         ctx.strokeStyle = `rgba(0, 240, 255, ${(r.life * 0.8).toFixed(3)})`;
-        ctx.lineWidth = 2 * r.life + 0.5;
+        ctx.lineWidth = (r.width || 2) * r.life + 0.5;
         ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2); ctx.stroke();
       }
-      if (!pointer.active || state === 'video') return;
+      if (!pointer.active || state === 'video' || state === 'exiting') return;
       const R = pointer.vortex ? pointerRadius * 2 : pointerRadius;
       const g = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, R);
       g.addColorStop(0, 'rgba(0, 240, 255, 0.10)');
@@ -2156,41 +2399,27 @@
       }
       drawBloom();
       drawPointerFx(now);
-
-      // Onda de choque relativista horizontal barriendo la pantalla (SynerX 5)
-      if (state === 'exiting') {
-        const tau = (now - exitSequence.startTime) / 1000;
-        if (tau >= 1.35 && tau <= 2.7) {
-          const shockX = (tau - 1.35) * (W * 1.35);
-          const grad = ctx.createLinearGradient(shockX - 380, 0, shockX + 140, 0);
-          grad.addColorStop(0, 'rgba(0, 240, 255, 0)');
-          grad.addColorStop(0.65, 'rgba(0, 240, 255, 0.38)');
-          grad.addColorStop(0.85, 'rgba(255, 255, 255, 0.80)');
-          grad.addColorStop(1, 'rgba(46, 230, 197, 0)');
-          ctx.fillStyle = grad;
-          ctx.fillRect(shockX - 380, 0, 520, H);
-        }
-      }
     }
 
     /* ========================================================================
        8. SECUENCIA: VIDEO -> PARTÍCULAS -> DESPLIEGUE A LA MITAD ("SynerX.")
        ======================================================================== */
-    function placeAtHome() {
+    function placeAtHome(allVisible = false) {
       const T0 = groupTransform(0, layoutMix);
       const T1 = groupTransform(1, layoutMix);
       for (let i = 0; i < N; i++) {
         const g = GRP[i];
-        if (g === 2) {
+        if (g === 2 && !allVisible) {
           // El prefijo S se inicializa en el dragón con alpha 0 y desciende hacia la palabra
           const dCenter = groupCenter(0);
-          X[i] = dCenter.x + (Math.random() - 0.5) * 40;
-          Y[i] = dCenter.y + 40 + Math.random() * 30;
+          X[i] = PX[i] = dCenter.x + (Math.random() - 0.5) * 40;
+          Y[i] = PY[i] = dCenter.y + 40 + Math.random() * 30;
           ALPHA[i] = 0.0;
         } else {
           const t = g === 0 ? T0 : T1;
-          X[i] = FX0[i] * t.s + t.tx;
-          Y[i] = FY0[i] * t.s + t.ty;
+          X[i] = PX[i] = FX0[i] * t.s + t.tx;
+          Y[i] = PY[i] = FY0[i] * t.s + t.ty;
+          ALPHA[i] = 1.0;
         }
         VX[i] = 0; VY[i] = 0;
       }
@@ -2442,6 +2671,7 @@
     }
 
     async function sendToBackend(rec) {
+      if (new URLSearchParams(window.location.search).has('dryrun')) return;
       const url = window.SINERX_REGISTRO_ENDPOINT || 'https://script.google.com/macros/s/AKfycbyrwY3i4k5GZYOzLhoPUerJrOCYhqFBJFc0e2BQsUdn6-vOibrlVgdxj40B417Gz_Q/exec';
       if (!url) return;
       await fetch(url, {
@@ -2465,9 +2695,64 @@
 
 
     /* ========================================================================
-       COREOGRAFÍA DE SALIDA CINEMÁTICA Y REDIRECCIÓN (SynerX 6)
+       COREOGRAFÍA DE SALIDA BETA DEFINITIVA: SIFÓN 0.5x & TWINKLE IN THE SKY
        ======================================================================== */
+    let currentExitRecord = null;
+
+    function clearExitTimers() {
+      if (exitSequence.portalTimer) { clearTimeout(exitSequence.portalTimer); exitSequence.portalTimer = null; }
+      if (exitSequence.redirectTimer) { clearTimeout(exitSequence.redirectTimer); exitSequence.redirectTimer = null; }
+      if (exitSequence.chimeTimer) { clearTimeout(exitSequence.chimeTimer); exitSequence.chimeTimer = null; }
+    }
+
+    function revealWarpPortalOverlay() {
+      if (exitSequence.overlayShown) return;
+      exitSequence.overlayShown = true;
+
+      const overlay = document.getElementById('warp-portal-overlay');
+      const msgEl = document.getElementById('warp-portal-msg');
+      const linkEl = document.getElementById('warp-portal-link');
+      const hasExternalNext = Boolean(exitSequence.targetUrl);
+      const rec = currentExitRecord;
+
+      if (msgEl) {
+        msgEl.textContent = hasExternalNext
+          ? 'Trascendiendo hacia el ecosistema principal SinerX...'
+          : (rec && rec.id
+              ? `Tu pre registro quedó confirmado (ID: ${rec.id}). Nuestro equipo te contactará pronto.`
+              : 'Tu pre registro quedó confirmado correctamente. Nuestro equipo te contactará pronto.');
+      }
+
+      if (linkEl) {
+        const labelSpan = linkEl.querySelector('span');
+        if (hasExternalNext) {
+          linkEl.setAttribute('href', exitSequence.targetUrl);
+          if (labelSpan) labelSpan.textContent = 'ACCEDER AL ECOSISTEMA';
+          linkEl.onclick = null;
+        } else {
+          linkEl.setAttribute('href', '#reg-success');
+          if (labelSpan) labelSpan.textContent = 'VOLVER AL PORTAL';
+          linkEl.onclick = e => {
+            e.preventDefault();
+            resetFromExitSequence();
+          };
+        }
+      }
+
+      if (overlay) {
+        overlay.removeAttribute('inert');
+        overlay.classList.add('active');
+      }
+
+      if (hasExternalNext) {
+        exitSequence.redirectTimer = setTimeout(() => {
+          window.location.href = exitSequence.targetUrl;
+        }, 950);
+      }
+    }
+
     function resetFromExitSequence() {
+      clearExitTimers();
       const overlay = document.getElementById('warp-portal-overlay');
       if (overlay) {
         overlay.classList.remove('active');
@@ -2477,11 +2762,21 @@
       if (panelInner) panelInner.classList.remove('is-warp-sucked');
 
       exitSequence.active = false;
-      exitSequence.spinAngle = 0;
-      exitSequence.spinSpeed = 0;
-      exitSequence.dragonOffsetX = 0;
-      exitSequence.dragonOffsetY = 0;
-      exitSequence.flightVelocityX = 0;
+      exitSequence.elapsed = 0;
+      exitSequence.siphonRadius = 0;
+      exitSequence.bgFade = 1.0;
+      exitSequence.overlayShown = false;
+      exitSequence.bh.active = false;
+      exitSequence.twinkle.active = false;
+
+      bloomAlpha = 0.5;
+      quantumSparks.length = 0;
+      rings.length = 0;
+
+      bgCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      if (N) placeAtHome(true);
+      initDust();
 
       state = 'interactive';
       body.classList.remove('phase-exiting');
@@ -2495,14 +2790,40 @@
 
     function startExitSequence(rec) {
       if (state === 'exiting') return;
+      clearExitTimers();
       state = 'exiting';
-      
+      currentExitRecord = rec || null;
+
       body.classList.remove('phase-interactive');
       body.classList.add('phase-exiting');
 
+      const c0 = groupCenter(0);
+      const bhX = W * 0.5;
+      const bhY = H * 0.5;
+
       exitSequence.active = true;
-      exitSequence.startTime = performance.now();
-      exitSequence.phase = 0;
+      exitSequence.elapsed = 0;
+      exitSequence.dLogo = Math.hypot(c0.x - bhX, c0.y - bhY);
+      exitSequence.rMax = Math.hypot(W * 0.5, H * 0.5) * 1.25;
+      exitSequence.siphonRadius = 40;
+      exitSequence.bgFade = 1.0;
+      exitSequence.overlayShown = false;
+      exitSequence.twinkle = { active: false, x: bhX, y: bhY, progress: 0 };
+      exitSequence.bh = {
+        x: bhX,
+        y: bhY,
+        currentR: 2,
+        photonR: 4,
+        growth: 0,
+        swirlAngle: 0,
+        intensity: 0.2,
+        active: true
+      };
+
+      for (let i = 0; i < N; i++) {
+        PX[i] = X[i];
+        PY[i] = Y[i];
+      }
 
       if (rec) {
         const successText = document.getElementById('success-text');
@@ -2511,15 +2832,18 @@
         if (successId) successId.textContent = `ID: ${rec.id}`;
       }
 
-      // 1. Audio: Disparar síntesis de aceleración rotacional y vórtice warp
+      // 1. Audio: Sifón sincronizado a 0.5x + destello cristalino en Fase 4 (~5.16s)
       ambientMusic.triggerExitWarp();
+      if (!reduceMotion) {
+        exitSequence.chimeTimer = setTimeout(() => {
+          if (state === 'exiting') ambientMusic.triggerResonance(1046.5);
+        }, 5160);
+      }
 
-      // 2. DOM: Animar la succión gravitacional de la tarjeta de pre registro
+      // 2. DOM: Succión centrípeta de la tarjeta (el delay de 1.24s vive en CSS para sincronizar con Fase 2)
       const panelInner = document.querySelector('.panel-inner');
       if (panelInner) {
-        setTimeout(() => {
-          panelInner.classList.add('is-warp-sucked');
-        }, 450);
+        panelInner.classList.add('is-warp-sucked');
       }
 
       // Desactivar interacciones del puntero
@@ -2527,49 +2851,16 @@
       pointer.vortex = false;
       blackHoles = [];
 
-      // 3. Activar overlay de confirmación y portal
-      setTimeout(() => {
-        const overlay = document.getElementById('warp-portal-overlay');
-        const msgEl = document.getElementById('warp-portal-msg');
-        const linkEl = document.getElementById('warp-portal-link');
-        const hasExternalNext = Boolean(exitSequence.targetUrl);
-
-        if (msgEl) {
-          msgEl.textContent = hasExternalNext
-            ? 'Trascendiendo a hipervelocidad hacia el ecosistema principal SinerX...'
-            : (rec && rec.id
-                ? `Tu pre registro quedó confirmado (ID: ${rec.id}). Nuestro equipo te contactará pronto.`
-                : 'Tu pre registro quedó confirmado correctamente. Nuestro equipo te contactará pronto.');
-        }
-
-        if (linkEl) {
-          const labelSpan = linkEl.querySelector('span');
-          if (hasExternalNext) {
-            linkEl.setAttribute('href', exitSequence.targetUrl);
-            if (labelSpan) labelSpan.textContent = 'ACCEDER AL ECOSISTEMA';
-            linkEl.onclick = null;
-          } else {
-            linkEl.setAttribute('href', '#reg-success');
-            if (labelSpan) labelSpan.textContent = 'VOLVER AL PORTAL';
-            linkEl.onclick = e => {
-              e.preventDefault();
-              resetFromExitSequence();
-            };
-          }
-        }
-
-        if (overlay) {
-          overlay.removeAttribute('inert');
-          overlay.classList.add('active');
-        }
-      }, 1750);
-
-      // 4. Redirección automática solo si existe una URL externa configurada
-      if (exitSequence.targetUrl) {
-        setTimeout(() => {
-          window.location.href = exitSequence.targetUrl;
-        }, 2600);
+      if (!reduceMotion) {
+        rings.push({ x: bhX, y: bhY, r: 6, max: 140, life: 0.85, width: 1.6 });
       }
+
+      // 3. Respaldo por temporizador para el portal (en flujo normal lo activa stepExitSiphon en tau=3.12 ~ 6.24s)
+      exitSequence.portalTimer = setTimeout(() => {
+        if (state === 'exiting' && !exitSequence.overlayShown) {
+          revealWarpPortalOverlay();
+        }
+      }, reduceMotion ? 350 : 6550);
     }
 
     // Exponer función de testeo para arnés E2E automatizado
