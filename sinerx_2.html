@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="SinerX - Experiencia interactiva del dragón cibernético y registro de clientes.">
+  <meta name="theme-color" content="#02070B">
+  <title>sinerx_2 | SinerX · Registro de Clientes</title>
+
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preload" as="video" href="assets/video/dragon_optimized_audio.mp4" type="video/mp4">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       SINERX_2 · LÍNEA GRÁFICA DEL DRAGÓN CIBERNÉTICO
+       Tokens tomados del video y de la insignia de referencia:
+       vacío digital, cian eléctrico, turquesa/menta y azul de la cola del dragón.
+       ========================================================================== */
+    :root {
+      --void: #02070B;
+      --void-2: #041219;
+      --cyan: #00F0FF;
+      --teal: #1ABC9C;
+      --mint: #2EE6C5;
+      --dragon-blue: #3A8FE0;
+      --silver: #A4E5E0;
+      --text: #E6FBFF;
+      --text-muted: #8FB3BC;
+      --error: #FF8A80;
+      --panel-bg: linear-gradient(180deg, rgba(4, 19, 27, 0.88) 0%, rgba(2, 10, 15, 0.95) 100%);
+      --line: rgba(0, 240, 255, 0.18);
+      --font-display: 'Orbitron', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--void);
+      color: var(--text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Capa 1: Video a pantalla completa, sin elementos encima ---------- */
+    .intro-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      background: var(--void);
+      z-index: 5;
+      opacity: 1;
+      transition: opacity 0.9s ease 0.15s;
+    }
+
+    .phase-particles .intro-video { opacity: 0; pointer-events: none; }
+    .intro-video.is-gone { visibility: hidden; }
+
+    /* ---------- Capa 2: Escena interactiva (fondo + partículas) ---------- */
+    .stage-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.7s ease;
+    }
+
+    #bg-canvas { z-index: 1; }
+    #fx-canvas { z-index: 2; touch-action: none; cursor: crosshair; }
+    .phase-particles .stage-canvas { opacity: 1; }
+
+    .stage-hint {
+      position: fixed;
+      z-index: 3;
+      left: 25%;
+      bottom: 4.5vh;
+      transform: translate(-50%, 8px);
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--silver);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease, transform 0.8s var(--ease-out);
+    }
+
+    .stage-hint kbd {
+      font-family: var(--font-display);
+      font-size: 0.66rem;
+      color: var(--cyan);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-right: 4px;
+    }
+
+    .phase-interactive .stage-hint { opacity: 0.85; transform: translate(-50%, 0); }
+    .phase-interactive.has-interacted .stage-hint { opacity: 0.4; }
+
+    .fallback-logo { display: none; }
+    .no-particles .fallback-logo {
+      display: block;
+      position: fixed;
+      z-index: 2;
+      left: 25%;
+      top: 50%;
+      width: min(36vw, 420px);
+      transform: translate(-50%, -50%);
+      filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.45));
+    }
+
+    /* ---------- Capa 3: Panel del formulario (mitad derecha) ---------- */
+    .form-panel {
+      position: fixed;
+      z-index: 6;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(1.5rem, 4vw, 4rem);
+      overflow-y: auto;
+      background: var(--panel-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 1.4s var(--ease-out), opacity 0.9s ease;
+    }
+
+    .form-panel::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8%;
+      bottom: 8%;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--cyan), transparent);
+      box-shadow: 0 0 14px var(--cyan);
+      opacity: 0.7;
+    }
+
+    .phase-split .form-panel { transform: none; opacity: 1; }
+
+    .panel-inner {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1.1rem, 2.6vh, 1.8rem);
+      margin: auto 0;
+    }
+
+    /* Aparición escalonada de los elementos del panel */
+    .panel-inner > * {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.9s var(--ease-out);
+      transition-delay: calc(var(--i, 0) * 90ms + 500ms);
+    }
+
+    .phase-split .panel-inner > * { opacity: 1; transform: none; }
+
+    .panel-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .panel-brand img {
+      width: 44px;
+      height: 44px;
+      filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.55));
+    }
+
+    .brand-word {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: 0.12em;
+      color: #FFFFFF;
+    }
+
+    .brand-word span { color: var(--cyan); text-shadow: 0 0 12px rgba(0, 240, 255, 0.7); }
+
+    .brand-sub {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 0.7rem;
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 2.3vw, 2rem);
+      font-weight: 700;
+      line-height: 1.22;
+      letter-spacing: 0.02em;
+      color: #FFFFFF;
+      margin-bottom: 0.7rem;
+    }
+
+    .panel-title span {
+      background: linear-gradient(90deg, var(--mint), var(--cyan) 50%, var(--dragon-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .panel-lead {
+      font-size: 0.93rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    /* Formulario */
+    .reg-form {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.85rem, 2vh, 1.2rem);
+    }
+
+    .reg-form[hidden] {
+      display: none !important;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .control { position: relative; }
+
+    .control svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translateY(-50%);
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+      transition: stroke 0.25s ease;
+    }
+
+    .control input {
+      width: 100%;
+      height: 52px;
+      padding: 0 16px 0 46px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: #FFFFFF;
+      background: rgba(2, 12, 18, 0.75);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .control input::placeholder { color: rgba(143, 179, 188, 0.55); }
+
+    .control input:hover { border-color: rgba(0, 240, 255, 0.35); }
+
+    .control input:focus {
+      border-color: var(--cyan);
+      background: rgba(4, 20, 29, 0.9);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.14), 0 0 24px rgba(0, 240, 255, 0.16);
+    }
+
+    .control input:focus + svg,
+    .control:focus-within svg { stroke: var(--cyan); }
+
+    .field.is-invalid input { border-color: var(--error); box-shadow: 0 0 0 3px rgba(255, 138, 128, 0.12); }
+
+    .field-error {
+      min-height: 1.05em;
+      margin-top: 0.3rem;
+      font-size: 0.76rem;
+      color: var(--error);
+    }
+
+    .btn-submit {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: 54px;
+      margin-top: 0.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #02121A;
+      background: linear-gradient(120deg, var(--teal) 0%, var(--cyan) 55%, var(--dragon-blue) 100%);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 26px rgba(0, 240, 255, 0.45);
+      transition: transform 0.25s var(--ease-out), box-shadow 0.25s ease, opacity 0.25s ease;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -80%;
+      width: 45%;
+      height: 220%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+      transform: rotate(25deg);
+      animation: sweep 3.2s ease-in-out infinite;
+    }
+
+    @keyframes sweep {
+      0% { left: -80%; }
+      35%, 100% { left: 150%; }
+    }
+
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 0 42px rgba(0, 240, 255, 0.7); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+    .btn-submit[disabled] { opacity: 0.65; cursor: progress; }
+
+    .btn-submit svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; transition: transform 0.25s ease; }
+    .btn-submit:hover svg { transform: translateX(4px); }
+
+    .form-status { min-height: 1.1em; font-size: 0.8rem; color: var(--error); text-align: center; }
+
+    /* Estado de éxito */
+    .reg-success {
+      text-align: center;
+      padding: 1.6rem 1.2rem;
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      border-radius: 14px;
+      background: rgba(2, 12, 18, 0.6);
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.12);
+      outline: none;
+    }
+
+    .reg-success[hidden] { display: none; }
+
+    .success-icon {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 1rem;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 22px rgba(0, 240, 255, 0.5);
+    }
+
+    .success-icon svg { width: 28px; height: 28px; stroke: var(--cyan); fill: none; stroke-width: 2.5; }
+
+    .reg-success h2 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: #FFFFFF;
+      margin-bottom: 0.6rem;
+    }
+
+    .reg-success p { font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); }
+
+    .success-id {
+      margin: 1rem 0 1.2rem;
+      padding: 0.65rem;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      letter-spacing: 0.14em;
+      color: var(--mint) !important;
+      border: 1px dashed rgba(0, 240, 255, 0.35);
+      border-radius: 8px;
+    }
+
+    .btn-ghost {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cyan);
+      background: transparent;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 999px;
+      padding: 0.6rem 1.3rem;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .btn-ghost:hover, .btn-ghost:focus-visible { background: var(--cyan); color: var(--void); outline: none; }
+
+    .panel-legal {
+      font-size: 0.68rem;
+      line-height: 1.5;
+      color: rgba(143, 179, 188, 0.7);
+      border-top: 1px solid rgba(0, 240, 255, 0.1);
+      padding-top: 0.9rem;
+    }
+
+    .panel-legal strong { color: var(--teal); font-weight: 600; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
+    /* ---------- Disposición apilada (móvil / pantallas verticales) ----------
+       Debe coincidir con STACKED_QUERY en el script. */
+    @media (max-width: 820px), (max-aspect-ratio: 9/10) {
+      .form-panel {
+        top: 40%;
+        width: 100%;
+        height: 60%;
+        align-items: flex-start;
+        padding: 1.4rem 1.25rem 1.6rem;
+        transform: translateY(100%);
+      }
+
+      .form-panel::before {
+        left: 8%;
+        right: 8%;
+        top: 0;
+        bottom: auto;
+        width: auto;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      }
+
+      .panel-brand { display: none; }
+      .panel-lead { display: none; }
+      .stage-hint { left: 50%; bottom: auto; top: calc(40% - 1.8rem); font-size: 0.7rem; }
+      .no-particles .fallback-logo { left: 50%; top: 20%; width: min(30vh, 60vw); }
+    }
+
+    @media (max-height: 720px) and (min-width: 821px) {
+      .panel-lead { display: none; }
+      .control input { height: 46px; }
+      .btn-submit { height: 48px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; transition-delay: 0ms !important; }
+    }
+  </style>
+</head>
+
+<body class="phase-video">
+
+  <!-- 1) Video del dragón a pantalla completa: sin textos ni imágenes encima -->
+  <video
+    id="intro-video"
+    class="intro-video"
+    playsinline
+    preload="auto"
+    disablepictureinpicture
+    disableremoteplayback
+    aria-label="Animación del dragón SinerX volando, formando la insignia y desplegando las letras"
+  >
+    <source src="assets/video/dragon_optimized_audio.mp4" type="video/mp4">
+    <source src="assets/video/dragon_flying_synerx.mp4" type="video/mp4">
+  </video>
+
+  <!-- 2) Escena interactiva de partículas (aparece al terminar el video) -->
+  <canvas id="bg-canvas" class="stage-canvas" aria-hidden="true"></canvas>
+  <canvas id="fx-canvas" class="stage-canvas" aria-hidden="true"></canvas>
+  <img class="fallback-logo" src="assets/img/logo_dragon_synerx.webp" alt="" aria-hidden="true">
+
+  <p class="stage-hint" id="stage-hint" aria-hidden="true">
+    <span id="hint-text"><kbd>Mover</kbd>perturba el campo &nbsp;·&nbsp; <kbd>Clic</kbd>onda de energía &nbsp;·&nbsp; <kbd>Mantener</kbd>vórtice</span>
+  </p>
+
+  <!-- 3) Panel de registro (mitad derecha de la pantalla) -->
+  <aside class="form-panel" id="form-panel" aria-labelledby="reg-title" inert>
+    <div class="panel-inner">
+
+      <header class="panel-brand" style="--i:0">
+        <img src="assets/img/logo_dragon_synerx.webp" alt="" width="44" height="44">
+        <div>
+          <span class="brand-word">Siner<span>X</span></span>
+          <span class="brand-sub">Ingeniería · Gemelos digitales</span>
+        </div>
+      </header>
+
+      <div style="--i:1">
+        <p class="eyebrow">Registro de clientes</p>
+        <h1 class="panel-title" id="reg-title">Conecte su operación con el <span>ecosistema SinerX</span></h1>
+        <p class="panel-lead">Déjenos sus datos y un ingeniero de nuestro equipo lo contactará para iniciar el diagnóstico de su proyecto.</p>
+      </div>
+
+      <form class="reg-form" id="reg-form" novalidate style="--i:2">
+        <div class="field" id="field-name">
+          <label for="f-name">Nombre completo</label>
+          <div class="control">
+            <input id="f-name" name="nombre" type="text" autocomplete="name" required placeholder="Ej.: María José Soto" aria-describedby="e-name">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+          </div>
+          <p class="field-error" id="e-name" aria-live="polite"></p>
+        </div>
+
+        <div class="field" id="field-phone">
+          <label for="f-phone">N° de teléfono</label>
+          <div class="control">
+            <input id="f-phone" name="telefono" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+56 9 1234 5678" aria-describedby="e-phone">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+          </div>
+          <p class="field-error" id="e-phone" aria-live="polite"></p>
+        </div>
+
+        <div class="field" id="field-email">
+          <label for="f-email">Correo electrónico</label>
+          <div class="control">
+            <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required placeholder="nombre@empresa.cl" aria-describedby="e-email">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+          </div>
+          <p class="field-error" id="e-email" aria-live="polite"></p>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <span id="btn-label">Registrarme</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="reg-success" id="reg-success" hidden tabindex="-1" style="--i:2">
+        <div class="success-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h2>Registro completado</h2>
+        <p id="success-text"></p>
+        <p class="success-id" id="success-id"></p>
+        <button type="button" class="btn-ghost" id="btn-new">Registrar otro cliente</button>
+      </div>
+
+      <footer class="panel-legal" style="--i:3">
+        <strong>Contenido audiovisual generado con IA (Ley N° 21.663):</strong>
+        Gemelo Digital Predictivo / Simulación Computacional SinerX. No corresponde a una instalación física construida.
+        &copy; 2026 SinerX SpA.
+      </footer>
+    </div>
+  </aside>
+
+  <!-- Nube de puntos del fotograma final (generada desde el propio video) -->
+  <script src="assets/data/sinerx_particles.js"></script>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ========================================================================
+       0. CONFIGURACIÓN Y REFERENCIAS
+       ======================================================================== */
+    const DATA = window.SINERX_PARTICLES || null;
+    const body = document.body;
+    const video = document.getElementById('intro-video');
+    const bgCanvas = document.getElementById('bg-canvas');
+    const fxCanvas = document.getElementById('fx-canvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    const ctx = fxCanvas.getContext('2d');
+    const panel = document.getElementById('form-panel');
+
+    const STACKED_QUERY = '(max-width: 820px), (max-aspect-ratio: 9/10)';
+    const stackedMQ = window.matchMedia(STACKED_QUERY);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
+    const lowPower = coarse || (navigator.hardwareConcurrency || 8) <= 4;
+
+    const TIMING = { materialize: 1900, split: 1500 };
+
+    let state = 'video'; // video -> particles -> split -> interactive
+    let W = 0, H = 0, DPR = 1;
+
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+    if (coarse) {
+      document.getElementById('hint-text').innerHTML =
+        '<kbd>Arrastrar</kbd>perturba &nbsp;·&nbsp; <kbd>Tocar</kbd>onda &nbsp;·&nbsp; <kbd>Mantener</kbd>vórtice';
+    }
+
+    /* ========================================================================
+       1. NUBE DE PARTÍCULAS (dragón + wordmark)
+       ======================================================================== */
+    let N = 0, FX0, FY0, GRP, X, Y, VX, VY, STIFF, buckets = [], palette = [];
+    const groupBox = [
+      { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity },
+      { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity }
+    ];
+    const frameW = DATA ? DATA.w : 1280;
+    const frameH = DATA ? DATA.h : 720;
+    const step = DATA ? DATA.step : 3;
+
+    function buildParticles() {
+      const src = DATA.p;
+      const stride = lowPower ? 2 : 1;
+      const total = src.length / 4;
+      N = Math.ceil(total / stride);
+      FX0 = new Float32Array(N); FY0 = new Float32Array(N);
+      GRP = new Uint8Array(N);
+      X = new Float32Array(N); Y = new Float32Array(N);
+      VX = new Float32Array(N); VY = new Float32Array(N);
+      STIFF = new Float32Array(N);
+      palette = DATA.palette;
+      const tmp = palette.map(() => []);
+      let n = 0;
+      for (let k = 0; k < total; k += stride) {
+        const o = k * 4;
+        const fx = src[o], fy = src[o + 1], c = src[o + 2], g = src[o + 3];
+        FX0[n] = fx; FY0[n] = fy; GRP[n] = g;
+        STIFF[n] = 0.75 + Math.random() * 0.5;
+        tmp[c].push(n);
+        const b = groupBox[g];
+        if (fx < b.minX) b.minX = fx;
+        if (fx > b.maxX) b.maxX = fx;
+        if (fy < b.minY) b.minY = fy;
+        if (fy > b.maxY) b.maxY = fy;
+        n++;
+      }
+      N = n;
+      buckets = tmp.map(a => Int32Array.from(a));
+      // si se submuestrea, se agranda la celda para conservar la densidad visual
+      cellMul = stride === 2 ? 1.35 : 1;
+    }
+    let cellMul = 1;
+
+    /* ========================================================================
+       2. DISPOSICIONES: "cover" (= video) y "split" (mitad izquierda)
+       ======================================================================== */
+    let cover = { s: 1, tx: 0, ty: 0 };
+    let split = [{ s: 1, tx: 0, ty: 0 }, { s: 1, tx: 0, ty: 0 }];
+    let region = { x: 0, y: 0, w: 0, h: 0 };
+    let layoutMix = 0;     // 0 = coincide con el video, 1 = mitad izquierda
+    let sizeFactor = 1;    // 1 = celdas sólidas (idéntico al fotograma), <1 = partículas
+    let bloomAlpha = 0;
+
+    function computeLayouts() {
+      const s = Math.max(W / frameW, H / frameH);
+      cover = { s, tx: (W - frameW * s) / 2, ty: (H - frameH * s) / 2 };
+
+      const stacked = stackedMQ.matches;
+      region = stacked ? { x: 0, y: 0, w: W, h: H * 0.4 } : { x: 0, y: 0, w: W * 0.5, h: H };
+
+      const A = groupBox[0], B = groupBox[1];
+      const aw = A.maxX - A.minX + step, ah = A.maxY - A.minY + step;
+      const bw = B.maxX - B.minX + step, bh = B.maxY - B.minY + step;
+      const padX = region.w * (stacked ? 0.08 : 0.12);
+      const padY = region.h * (stacked ? 0.14 : 0.16);
+      const availW = region.w - padX * 2, availH = region.h - padY * 2;
+      const cx = region.x + region.w / 2, cy = region.y + region.h / 2;
+
+      // Opción A: horizontal (igual que el video)
+      const uMinX = Math.min(A.minX, B.minX), uMaxX = Math.max(A.maxX, B.maxX) + step;
+      const uMinY = Math.min(A.minY, B.minY), uMaxY = Math.max(A.maxY, B.maxY) + step;
+      const sH = Math.min(availW / (uMaxX - uMinX), availH / (uMaxY - uMinY));
+
+      // Opción B: insignia sobre el wordmark (mejor uso de media pantalla vertical)
+      const gap = 46;
+      const sV = Math.min(availW / Math.max(aw, bw), availH / (ah + gap + bh));
+
+      if (sV >= sH) {
+        const totalH = (ah + gap + bh) * sV;
+        const top = cy - totalH / 2;
+        split = [
+          { s: sV, tx: cx - (A.minX + aw / 2) * sV, ty: top - A.minY * sV },
+          { s: sV, tx: cx - (B.minX + bw / 2) * sV, ty: top + (ah + gap) * sV - B.minY * sV }
+        ];
+      } else {
+        const t = {
+          s: sH,
+          tx: cx - ((uMinX + uMaxX) / 2) * sH,
+          ty: cy - ((uMinY + uMaxY) / 2) * sH
+        };
+        split = [t, t];
+      }
+    }
+
+    function groupTransform(g, e) {
+      const a = cover, b = split[g];
+      return { s: lerp(a.s, b.s, e), tx: lerp(a.tx, b.tx, e), ty: lerp(a.ty, b.ty, e) };
+    }
+
+    function groupCenter(g) {
+      const e = easeInOutCubic(layoutMix);
+      const T = groupTransform(g, e), b = groupBox[g];
+      return { x: ((b.minX + b.maxX) / 2) * T.s + T.tx, y: ((b.minY + b.maxY) / 2) * T.s + T.ty, s: T.s };
+    }
+
+    /* ========================================================================
+       3. LIENZOS Y REDIMENSIONAMIENTO
+       ======================================================================== */
+    const bloom = document.createElement('canvas');
+    const bctx = bloom.getContext('2d');
+    const useBloom = !lowPower;
+
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      DPR = Math.min(window.devicePixelRatio || 1, lowPower ? 1.25 : 1.75);
+      for (const c of [bgCanvas, fxCanvas]) {
+        c.width = Math.round(W * DPR);
+        c.height = Math.round(H * DPR);
+      }
+      bgCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      bloom.width = Math.max(1, Math.round(fxCanvas.width / 4));
+      bloom.height = Math.max(1, Math.round(fxCanvas.height / 4));
+      bctx.filter = 'blur(3px)';
+      if (DATA) computeLayouts();
+      pointerRadius = clamp(Math.min(W, H) * 0.12, 70, 150);
+      initDust();
+    }
+
+    let resizeQueued = false;
+    window.addEventListener('resize', () => {
+      if (resizeQueued) return;
+      resizeQueued = true;
+      requestAnimationFrame(() => { resizeQueued = false; resize(); });
+    }, { passive: true });
+
+    /* ========================================================================
+       4. PARTÍCULAS AMBIENTALES INTERACTIVAS (polvo de energía)
+       ======================================================================== */
+    let dust = [];
+    function initDust() {
+      const count = Math.round((W * H) / (lowPower ? 26000 : 13000));
+      dust = [];
+      for (let i = 0; i < count; i++) {
+        dust.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25 - 0.08,
+          r: Math.random() * 1.4 + 0.5,
+          a: Math.random() * 0.5 + 0.25
+        });
+      }
+    }
+
+    /* ========================================================================
+       5. PUNTERO: repulsión, barrido, onda de energía y vórtice
+       ======================================================================== */
+    const pointer = { x: -9999, y: -9999, vx: 0, vy: 0, active: false, down: false, vortex: false, downAt: 0, downX: 0, downY: 0 };
+    let pointerRadius = 110;
+    let holdTimer = null;
+    const rings = [];
+
+    function markInteracted() { body.classList.add('has-interacted'); }
+
+    fxCanvas.addEventListener('pointermove', e => {
+      const nx = e.clientX, ny = e.clientY;
+      if (pointer.active) {
+        pointer.vx = pointer.vx * 0.5 + (nx - pointer.x) * 0.5;
+        pointer.vy = pointer.vy * 0.5 + (ny - pointer.y) * 0.5;
+      }
+      pointer.x = nx; pointer.y = ny; pointer.active = true;
+      if (pointer.down && Math.hypot(nx - pointer.downX, ny - pointer.downY) > 12) clearTimeout(holdTimer);
+    }, { passive: true });
+
+    fxCanvas.addEventListener('pointerleave', () => {
+      if (!pointer.down) pointer.active = false;
+    });
+
+    fxCanvas.addEventListener('pointerdown', e => {
+      fxCanvas.setPointerCapture(e.pointerId);
+      pointer.down = true; pointer.active = true;
+      pointer.x = pointer.downX = e.clientX;
+      pointer.y = pointer.downY = e.clientY;
+      pointer.downAt = performance.now();
+      clearTimeout(holdTimer);
+      holdTimer = setTimeout(() => { if (pointer.down) { pointer.vortex = true; markInteracted(); } }, 230);
+    });
+
+    function endPointer(e) {
+      if (!pointer.down) return;
+      clearTimeout(holdTimer);
+      const quick = performance.now() - pointer.downAt < 230;
+      const still = Math.hypot(e.clientX - pointer.downX, e.clientY - pointer.downY) < 12;
+      if (quick && still && !pointer.vortex) {
+        pulse(e.clientX, e.clientY, 17, pointerRadius * 2.8);
+        rings.push({ x: e.clientX, y: e.clientY, r: 4, max: pointerRadius * 2.8, life: 1 });
+        markInteracted();
+      }
+      pointer.down = false;
+      pointer.vortex = false;
+      if (e.pointerType !== 'mouse') pointer.active = false;
+    }
+    fxCanvas.addEventListener('pointerup', endPointer);
+    fxCanvas.addEventListener('pointercancel', endPointer);
+
+    /** Impulso radial sobre partículas y polvo. */
+    function pulse(px, py, strength, radius) {
+      if (!N) return;
+      const r2 = radius * radius;
+      for (let i = 0; i < N; i++) {
+        const dx = X[i] - px, dy = Y[i] - py, d2 = dx * dx + dy * dy;
+        if (d2 < r2) {
+          const d = Math.sqrt(d2) + 0.001, f = 1 - d / radius;
+          VX[i] += (dx / d) * f * strength * (0.7 + Math.random() * 0.6);
+          VY[i] += (dy / d) * f * strength * (0.7 + Math.random() * 0.6);
+        }
+      }
+      for (const p of dust) {
+        const dx = p.x - px, dy = p.y - py, d = Math.hypot(dx, dy) + 0.001;
+        if (d < radius * 1.4) {
+          const f = 1 - d / (radius * 1.4);
+          p.vx += (dx / d) * f * strength * 0.25;
+          p.vy += (dy / d) * f * strength * 0.25;
+        }
+      }
+    }
+
+    /* ========================================================================
+       6. TWEENS
+       ======================================================================== */
+    const tweens = [];
+    function tween(from, to, dur, delay, ease, set, done) {
+      tweens.push({ from, to, dur, start: performance.now() + delay, ease, set, done });
+    }
+    function runTweens(now) {
+      for (let i = tweens.length - 1; i >= 0; i--) {
+        const t = tweens[i];
+        if (now < t.start) continue;
+        const k = clamp((now - t.start) / t.dur, 0, 1);
+        t.set(lerp(t.from, t.to, t.ease(k)));
+        if (k >= 1) { tweens.splice(i, 1); if (t.done) t.done(); }
+      }
+    }
+
+    /* ========================================================================
+       7. BUCLE DE RENDER (60 FPS)
+       ======================================================================== */
+    let last = performance.now();
+    let running = false;
+
+    function drawBackground(time, e) {
+      const vx = lerp(W / 2, region.x + region.w / 2, e);
+      const vy = lerp(H / 2, region.y + region.h / 2, e);
+      const grad = bgCtx.createRadialGradient(vx, vy, 0, vx, vy, Math.max(W, H) * 0.75);
+      grad.addColorStop(0, '#072631');
+      grad.addColorStop(0.45, '#03121A');
+      grad.addColorStop(1, '#010509');
+      bgCtx.fillStyle = grad;
+      bgCtx.fillRect(0, 0, W, H);
+
+      if (reduceMotion) return;
+      const diag = Math.hypot(W, H);
+      bgCtx.lineWidth = 1;
+      bgCtx.strokeStyle = 'rgba(0, 240, 255, 0.05)';
+      bgCtx.beginPath();
+      const rays = 32;
+      for (let i = 0; i < rays; i++) {
+        const a = (i / rays) * Math.PI * 2;
+        bgCtx.moveTo(vx, vy);
+        bgCtx.lineTo(vx + Math.cos(a) * diag, vy + Math.sin(a) * diag);
+      }
+      bgCtx.stroke();
+
+      // marcos de túnel en avance continuo (eco de la retícula del video)
+      const frames = 9;
+      for (let k = 0; k < frames; k++) {
+        const z = ((k + time * 0.00012) % frames) / frames;
+        const sc = 0.04 + z * z * 1.7;
+        const alpha = 0.11 * Math.sin(z * Math.PI);
+        bgCtx.strokeStyle = `rgba(0, 240, 255, ${alpha.toFixed(3)})`;
+        bgCtx.strokeRect(vx - (W * sc) / 2, vy - (H * sc) / 2, W * sc, H * sc);
+      }
+    }
+
+    function drawDust(dt) {
+      const px = pointer.x, py = pointer.y, link = 150, link2 = link * link;
+      ctx.lineWidth = 1;
+      for (const p of dust) {
+        if (pointer.active) {
+          const dx = px - p.x, dy = py - p.y, d2 = dx * dx + dy * dy;
+          if (d2 < link2 * 2.2) {
+            const d = Math.sqrt(d2) + 0.001;
+            const f = 0.012 * (1 - d / (link * 1.48));
+            p.vx += dx / d * f * dt;
+            p.vy += dy / d * f * dt;
+          }
+        }
+        p.vx *= Math.pow(0.985, dt);
+        p.vy *= Math.pow(0.985, dt);
+        p.x += (p.vx + 0) * dt;
+        p.y += (p.vy - 0.06) * dt;
+        if (p.x < -10) p.x = W + 10; else if (p.x > W + 10) p.x = -10;
+        if (p.y < -10) p.y = H + 10; else if (p.y > H + 10) p.y = -10;
+      }
+
+      // constelaciones entre partículas cercanas y hacia el cursor
+      for (let i = 0; i < dust.length; i++) {
+        const a = dust[i];
+        for (let j = i + 1; j < dust.length; j++) {
+          const b = dust[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+          if (d2 < 9000) {
+            ctx.strokeStyle = `rgba(0, 229, 201, ${(0.12 * (1 - d2 / 9000)).toFixed(3)})`;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+        if (pointer.active) {
+          const dx = a.x - px, dy = a.y - py, d2 = dx * dx + dy * dy;
+          if (d2 < link2) {
+            ctx.strokeStyle = `rgba(0, 240, 255, ${(0.45 * (1 - d2 / link2)).toFixed(3)})`;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(px, py); ctx.stroke();
+          }
+        }
+      }
+      ctx.fillStyle = '#7FF6FF';
+      for (const p of dust) {
+        ctx.globalAlpha = p.a;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function stepParticles(dt, time, e) {
+      const T0 = groupTransform(0, e), T1 = groupTransform(1, e);
+      const K = 0.05;
+      const damp = Math.pow(0.86, dt);
+      const breathe = state !== 'particles' && !reduceMotion;
+      const pActive = pointer.active && state !== 'video';
+      const px = pointer.x, py = pointer.y, pvx = pointer.vx, pvy = pointer.vy;
+      const vortex = pointer.vortex;
+      const R = vortex ? pointerRadius * 2 : pointerRadius, R2 = R * R;
+      const REP = 2.6, SWIRL = 1.9;
+
+      for (let i = 0; i < N; i++) {
+        const T = GRP[i] ? T1 : T0;
+        const hx = FX0[i] * T.s + T.tx;
+        let hy = FY0[i] * T.s + T.ty;
+        if (breathe) hy += Math.sin(time * 0.0013 + FX0[i] * 0.02 + FY0[i] * 0.008) * T.s * 0.9;
+
+        let ax = (hx - X[i]) * K * STIFF[i];
+        let ay = (hy - Y[i]) * K * STIFF[i];
+
+        if (pActive) {
+          const dx = X[i] - px, dy = Y[i] - py, d2 = dx * dx + dy * dy;
+          if (d2 < R2) {
+            const d = Math.sqrt(d2) + 0.001, f = 1 - d / R, f2 = f * f;
+            if (vortex) {
+              ax += (-dy / d) * f * SWIRL - (dx / d) * f2 * 1.4;
+              ay += (dx / d) * f * SWIRL - (dy / d) * f2 * 1.4;
+            } else {
+              ax += (dx / d) * f2 * REP + pvx * f2 * 0.12;
+              ay += (dy / d) * f2 * REP + pvy * f2 * 0.12;
+            }
+          }
+        }
+        VX[i] = (VX[i] + ax * dt) * damp;
+        VY[i] = (VY[i] + ay * dt) * damp;
+        X[i] += VX[i] * dt;
+        Y[i] += VY[i] * dt;
+      }
+      return [T0, T1];
+    }
+
+    function drawParticles(T) {
+      const c0 = step * T[0].s, c1 = step * T[1].s;
+      const f = sizeFactor * (sizeFactor < 0.999 ? cellMul : 1);
+      const s0 = Math.max(1.1, c0 * f), s1 = Math.max(1.1, c1 * f);
+      const o0 = (c0 - s0) / 2, o1 = (c1 - s1) / 2;
+      for (let c = 0; c < buckets.length; c++) {
+        const b = buckets[c];
+        if (!b.length) continue;
+        ctx.fillStyle = palette[c];
+        for (let j = 0; j < b.length; j++) {
+          const i = b[j];
+          if (GRP[i]) ctx.fillRect(X[i] + o1, Y[i] + o1, s1, s1);
+          else ctx.fillRect(X[i] + o0, Y[i] + o0, s0, s0);
+        }
+      }
+      // destellos aleatorios
+      if (state !== 'particles') {
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = 'rgba(210, 255, 255, 0.85)';
+        const sparks = Math.round(N * 0.003);
+        for (let k = 0; k < sparks; k++) {
+          const i = (Math.random() * N) | 0;
+          const sz = (GRP[i] ? s1 : s0) * 1.3;
+          ctx.fillRect(X[i], Y[i], sz, sz);
+        }
+        ctx.globalCompositeOperation = 'source-over';
+      }
+    }
+
+    function drawBloom() {
+      if (!useBloom || bloomAlpha <= 0.01) return;
+      bctx.clearRect(0, 0, bloom.width, bloom.height);
+      bctx.drawImage(fxCanvas, 0, 0, bloom.width, bloom.height);
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = bloomAlpha;
+      ctx.drawImage(bloom, 0, 0, fxCanvas.width, fxCanvas.height);
+      ctx.restore();
+    }
+
+    function drawPointerFx(time) {
+      for (let i = rings.length - 1; i >= 0; i--) {
+        const r = rings[i];
+        r.r += (r.max - r.r) * 0.08 + 2;
+        r.life -= 0.025;
+        if (r.life <= 0) { rings.splice(i, 1); continue; }
+        ctx.strokeStyle = `rgba(0, 240, 255, ${(r.life * 0.8).toFixed(3)})`;
+        ctx.lineWidth = 2 * r.life + 0.5;
+        ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2); ctx.stroke();
+      }
+      if (!pointer.active || state === 'video') return;
+      const R = pointer.vortex ? pointerRadius * 2 : pointerRadius;
+      const g = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, R);
+      g.addColorStop(0, 'rgba(0, 240, 255, 0.10)');
+      g.addColorStop(1, 'rgba(0, 240, 255, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(pointer.x, pointer.y, R, 0, Math.PI * 2); ctx.fill();
+      if (pointer.vortex) {
+        ctx.strokeStyle = 'rgba(46, 230, 197, 0.6)';
+        ctx.lineWidth = 1.5;
+        const a = time * 0.006;
+        for (let k = 0; k < 3; k++) {
+          ctx.beginPath();
+          ctx.arc(pointer.x, pointer.y, R * (0.35 + k * 0.2), a + k * 2.1, a + k * 2.1 + 1.6);
+          ctx.stroke();
+        }
+      }
+    }
+
+    function frame(now) {
+      if (!running) return;
+      requestAnimationFrame(frame);
+      const dt = clamp((now - last) / 16.667, 0.2, 3);
+      last = now;
+      runTweens(now);
+      const e = easeInOutCubic(layoutMix);
+      pointer.vx *= 0.85; pointer.vy *= 0.85;
+
+      drawBackground(now, e);
+      ctx.clearRect(0, 0, W, H);
+      if (state !== 'particles') drawDust(dt);
+      if (N) {
+        const T = stepParticles(dt, now, e);
+        drawParticles(T);
+      }
+      drawBloom();
+      drawPointerFx(now);
+    }
+
+    /* ========================================================================
+       8. SECUENCIA: video -> partículas -> pantalla dividida
+       ======================================================================== */
+    function placeAtHome() {
+      const T = [groupTransform(0, layoutMix), groupTransform(1, layoutMix)];
+      for (let i = 0; i < N; i++) {
+        const t = T[GRP[i]];
+        X[i] = FX0[i] * t.s + t.tx;
+        Y[i] = FY0[i] * t.s + t.ty;
+        VX[i] = 0; VY[i] = 0;
+      }
+    }
+
+    function startScene({ instant = false } = {}) {
+      if (state !== 'video') return;
+      state = 'particles';
+      if (!DATA) body.classList.add('no-particles');
+      resize();
+
+      if (instant) {
+        layoutMix = 1; sizeFactor = 0.6; bloomAlpha = 0.5;
+      }
+      if (N) placeAtHome();
+
+      body.classList.remove('phase-video');
+      body.classList.add('phase-particles');
+      setTimeout(() => { video.pause(); video.classList.add('is-gone'); }, instant ? 0 : 1100);
+
+      running = true;
+      last = performance.now();
+      requestAnimationFrame(frame);
+
+      if (instant) { enterSplit(true); return; }
+
+      // el bloque sólido se disuelve en partículas y "despierta"
+      tween(1, 0.6, 1500, 450, easeInOutCubic, v => { sizeFactor = v; });
+      tween(0, 0.5, 1600, 600, easeOutCubic, v => { bloomAlpha = v; });
+      setTimeout(() => {
+        for (let i = 0; i < N; i++) {
+          VX[i] += (Math.random() - 0.5) * 2.2;
+          VY[i] += (Math.random() - 0.5) * 2.2;
+        }
+      }, 800);
+      setTimeout(() => enterSplit(false), TIMING.materialize);
+    }
+
+    function enterSplit(instant) {
+      state = 'split';
+      panel.removeAttribute('inert');
+      body.classList.add('phase-split');
+      const finish = () => {
+        state = 'interactive';
+        body.classList.add('phase-interactive');
+        if (!coarse) document.getElementById('f-name').focus({ preventScroll: true });
+      };
+      if (instant) { layoutMix = 1; finish(); return; }
+      tween(0, 1, TIMING.split, 0, t => t, v => { layoutMix = v; }, finish);
+    }
+
+    /* ---- Video: intenta con sonido; si el navegador lo bloquea, reproduce en silencio ---- */
+    function goToEnd() {
+      if (state !== 'video') return;
+      if (isFinite(video.duration) && video.duration > 0) {
+        video.currentTime = Math.max(0, video.duration - 0.03);
+      } else {
+        startScene();
+      }
+    }
+
+    function initVideo() {
+      if (reduceMotion || !DATA) { startScene({ instant: true }); return; }
+
+      video.addEventListener('ended', () => startScene(), { once: true });
+      video.addEventListener('error', () => startScene(), { once: true });
+      const sources = video.querySelectorAll('source');
+      if (sources.length) sources[sources.length - 1].addEventListener('error', () => startScene(), { once: true });
+
+      // atajos invisibles para omitir el intro (sin UI encima del video)
+      window.addEventListener('keydown', ev => {
+        if (state === 'video' && ['Escape', 'Enter', ' '].includes(ev.key)) { ev.preventDefault(); goToEnd(); }
+      });
+      video.addEventListener('dblclick', goToEnd);
+
+      video.muted = false;
+      const p = video.play();
+      if (p && typeof p.catch === 'function') {
+        p.catch(() => {
+          video.muted = true;
+          return video.play();
+        }).catch(() => startScene());
+      }
+
+      // salvaguarda ante bloqueos de red o decodificación
+      setTimeout(() => { if (state === 'video' && video.currentTime < 0.1) startScene(); }, 25000);
+    }
+
+    /* ========================================================================
+       9. FORMULARIO DE REGISTRO
+       ======================================================================== */
+    const form = document.getElementById('reg-form');
+    const fields = {
+      name: { input: document.getElementById('f-name'), box: document.getElementById('field-name'), err: document.getElementById('e-name') },
+      phone: { input: document.getElementById('f-phone'), box: document.getElementById('field-phone'), err: document.getElementById('e-phone') },
+      email: { input: document.getElementById('f-email'), box: document.getElementById('field-email'), err: document.getElementById('e-email') }
+    };
+    const statusEl = document.getElementById('form-status');
+    const btn = document.getElementById('btn-submit');
+    const btnLabel = document.getElementById('btn-label');
+    const successBox = document.getElementById('reg-success');
+
+    const validators = {
+      name: v => {
+        const words = v.trim().split(/\s+/).filter(w => w.length >= 2);
+        if (!v.trim()) return 'Ingrese su nombre completo.';
+        if (words.length < 2) return 'Ingrese nombre y apellido.';
+        if (!/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' .-]+$/.test(v.trim())) return 'El nombre contiene caracteres no válidos.';
+        return '';
+      },
+      phone: v => {
+        const digits = v.replace(/\D/g, '');
+        if (!v.trim()) return 'Ingrese su número de teléfono.';
+        if (!/^[+\d\s().-]+$/.test(v.trim())) return 'Use solo números, espacios y el signo +.';
+        if (digits.length < 8 || digits.length > 15) return 'Ingrese un número válido (ej.: +56 9 1234 5678).';
+        return '';
+      },
+      email: v => {
+        if (!v.trim()) return 'Ingrese su correo electrónico.';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())) return 'Ingrese un correo válido (ej.: nombre@empresa.cl).';
+        return '';
+      }
+    };
+
+    function validateField(key) {
+      const f = fields[key];
+      const msg = validators[key](f.input.value);
+      f.err.textContent = msg;
+      f.box.classList.toggle('is-invalid', !!msg);
+      f.input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      return !msg;
+    }
+
+    Object.keys(fields).forEach(key => {
+      const f = fields[key];
+      f.input.addEventListener('blur', () => { if (f.input.value) validateField(key); });
+      f.input.addEventListener('input', () => {
+        if (f.box.classList.contains('is-invalid')) validateField(key);
+        // el dragón "respira" con cada pulsación
+        if (N && state === 'interactive') {
+          const c = groupCenter(0);
+          pulse(c.x, c.y, 2.2, 260 * c.s);
+        }
+      });
+    });
+
+    function makeId() {
+      const d = new Date();
+      const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+      const rnd = new Uint32Array(1);
+      (window.crypto || window.msCrypto).getRandomValues(rnd);
+      return `SNX-${ymd}-${rnd[0].toString(36).toUpperCase().slice(0, 5).padStart(5, '0')}`;
+    }
+
+    function persistLocal(rec) {
+      try {
+        const key = 'sinerx_registros_clientes';
+        const list = JSON.parse(localStorage.getItem(key) || '[]');
+        list.push(rec);
+        localStorage.setItem(key, JSON.stringify(list));
+      } catch (_) { /* almacenamiento no disponible (modo privado) */ }
+    }
+
+    /** Punto de integración: definir window.SINERX_REGISTRO_ENDPOINT (Supabase Edge Function / webhook n8n). */
+    async function sendToBackend(rec) {
+      const url = window.SINERX_REGISTRO_ENDPOINT;
+      if (!url) return;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rec)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    }
+
+    function celebrate() {
+      if (!N) return;
+      const c0 = groupCenter(0), c1 = groupCenter(1);
+      const cx = (c0.x + c1.x) / 2, cy = (c0.y + c1.y) / 2;
+      pulse(cx, cy, 24, Math.max(W, H));
+      rings.push({ x: cx, y: cy, r: 10, max: Math.max(region.w, region.h) * 0.7, life: 1 });
+      setTimeout(() => rings.push({ x: cx, y: cy, r: 10, max: Math.max(region.w, region.h) * 0.5, life: 1 }), 180);
+    }
+
+    form.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      statusEl.textContent = '';
+      const ok = ['name', 'phone', 'email'].map(validateField).every(Boolean);
+      if (!ok) {
+        const firstBad = ['name', 'phone', 'email'].find(k => fields[k].box.classList.contains('is-invalid'));
+        fields[firstBad].input.focus();
+        return;
+      }
+
+      const rec = {
+        id: makeId(),
+        nombre: fields.name.input.value.trim().replace(/\s+/g, ' '),
+        telefono: fields.phone.input.value.trim(),
+        email: fields.email.input.value.trim().toLowerCase(),
+        fecha: new Date().toISOString(),
+        origen: 'sinerx_2'
+      };
+
+      btn.disabled = true;
+      btnLabel.textContent = 'Registrando…';
+      try {
+        await sendToBackend(rec);
+        persistLocal(rec);
+        celebrate();
+        document.getElementById('success-text').textContent =
+          `Gracias, ${rec.nombre}. Lo contactaremos al ${rec.telefono} o en ${rec.email}.`;
+        document.getElementById('success-id').textContent = `ID de registro: ${rec.id}`;
+        form.hidden = true;
+        successBox.hidden = false;
+        successBox.focus();
+        form.reset();
+      } catch (err) {
+        statusEl.textContent = 'No pudimos completar el registro. Intente nuevamente en unos segundos.';
+      } finally {
+        btn.disabled = false;
+        btnLabel.textContent = 'Registrarme';
+      }
+    });
+
+    document.getElementById('btn-new').addEventListener('click', () => {
+      successBox.hidden = true;
+      form.hidden = false;
+      Object.values(fields).forEach(f => { f.err.textContent = ''; f.box.classList.remove('is-invalid'); });
+      fields.name.input.focus();
+    });
+
+    /* ========================================================================
+       10. ARRANQUE
+       ======================================================================== */
+    if (DATA) buildParticles();
+    resize();
+    stackedMQ.addEventListener ? stackedMQ.addEventListener('change', resize) : stackedMQ.addListener(resize);
+    initVideo();
+  })();
+  </script>
+</body>
+</html>
